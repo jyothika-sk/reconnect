@@ -1,0 +1,590 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Retiree Connect - Experience Sharing & Mentorship">
+    <meta name="author" content="">
+    <title>Register as Seeker - Retiree Connect</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/themify/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/magnific-popup/dist/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/slick-carousel/slick/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/slick-carousel/slick/slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body {
+            background-color: #111;
+            color: #bbb;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #000 !important;
+        }
+
+        .navbar .nav-link {
+            color: #fff !important;
+            transition: 0.3s;
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-item.active .nav-link {
+            color: #b73613 !important;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        .navbar-brand span {
+            color: #b73613;
+        }
+
+        /* Buttons */
+        .btn-brand {
+            background-color: #b73613 !important;
+            color: #fff !important;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 4px 14px;
+            border: none;
+        }
+
+        .btn-brand:hover {
+            background-color: #92270e !important;
+            color: #fff !important;
+        }
+
+        .btn-outline-brand {
+            border: 1px solid #b73613;
+            color: #b73613;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 4px 14px;
+            transition: 0.3s;
+        }
+
+        .btn-outline-brand:hover {
+            background-color: #b73613;
+            color: #fff;
+        }
+
+        /* Footer */
+        .footer {
+            background: #111;
+            color: #bbb;
+        }
+
+        .footer h4 {
+            color: #b73613;
+        }
+
+        .footer a {
+            color: #bbb;
+            transition: 0.3s;
+        }
+
+        .footer a:hover {
+            color: #b73613;
+        }
+
+        .footer .copyright {
+            color: #777;
+        }
+
+        .brand-highlight {
+            color: #b73613;
+        }
+
+        /* Links */
+        a {
+            color: #b73613;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar .fa-bell {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .navbar .fa-bell:hover {
+            color: #b73613;
+        }
+
+        .navbar .nav-link.admin-link {
+            color: #f0c674;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .navbar .nav-link.admin-link:hover {
+            color: #b73613;
+            text-decoration: underline;
+        }
+
+        /* Password validation styles */
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+
+        .password-weak {
+            color: #dc3545;
+        }
+
+        .password-medium {
+            color: #fd7e14;
+        }
+
+        .password-strong {
+            color: #28a745;
+        }
+
+        .password-match {
+            color: #28a745;
+        }
+
+        .password-mismatch {
+            color: #dc3545;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .form-control.is-valid {
+            border-color: #28a745;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.3s ease;
+            padding-top: 6px;
+            z-index: 5;
+        }
+
+        .password-toggle:hover {
+            color: #b73613;
+        }
+
+        .password-input-wrapper .form-control {
+            padding-right: 45px;
+        }
+
+        /* Form Styles */
+        .form-control {
+            background: #222 !important;
+            color: #fff !important;
+            border: 1px solid #333 !important;
+            border-radius: 8px;
+        }
+
+        .form-control:focus {
+            border-color: #b73613 !important;
+            box-shadow: 0 0 0 0.2rem rgba(183, 54, 19, 0.25) !important;
+        }
+
+        /* Photo Upload Styles */
+        .photo-upload-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .photo-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #b73613;
+            margin: 0 auto 15px;
+            display: none;
+        }
+
+        .photo-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #333;
+            border: 3px dashed #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: #888;
+            font-size: 3rem;
+        }
+
+        .upload-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #444;
+            border-color: #b73613;
+            color: #fff;
+        }
+
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navigation">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    Re<span class="brand-highlight">Connect</span>
+                </a>
+                <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="fa fa-bars" style="color:#fff;"></span>
+                </button>
+
+                <div class="collapse navbar-collapse text-center" id="navbarsExample09">
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Public navbar -->
+                        <li class="nav-item active"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'public_blog_list' %}">Blogs</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'admin_login' %}">Admin</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle btn btn-sm btn-outline-brand" href="#"
+                                id="registerDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">Register</a>
+                            <ul class="dropdown-menu" aria-labelledby="registerDropdown" style="background:#1a1a1a;">
+                                <li><a class="dropdown-item" href="{% url 'RRegistration' %}"
+                                        style="color:#e3dad8;">Register as
+                                        Retiree</a></li>
+                                <li><a class="dropdown-item" href="{% url 'SRegistration' %}"
+                                        style="color:#e3dad8;">Register as
+                                        Seeker</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="btn btn-sm btn-brand ml-2" href="{% url 'Rlogin' %}">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+<main>
+<section class="py-5" style="background:#111; min-height:100vh; display:flex; align-items:center; justify-content:center;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card shadow-lg p-4" style="background:#1a1a1a; border-radius:16px; border:none;">
+
+          <!-- Heading -->
+          <h3 class="text-center mb-3" style="color:#fff;">
+            Seeker <span style="color:#b73613;">Registration</span>
+          </h3>
+          <p class="text-center mb-4" style="color:#bbb;">
+            Already have an account?
+            <a href="{% url 'Rlogin' %}" style="color:#b73613;">Login</a>
+          </p>
+          
+          <!-- Display Messages -->
+          {% if messages %}
+          <div class="messages mb-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          
+          <form method="post" enctype="multipart/form-data" id="registrationForm">
+            {% csrf_token %}
+
+            <!-- Photo Upload Section -->
+            <div class="photo-upload-container">
+                <img id="photoPreview" class="photo-preview" alt="Profile photo preview">
+                <div id="photoPlaceholder" class="photo-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+                <label for="photo" class="upload-btn">
+                    <i class="fas fa-camera me-2"></i>Upload Photo
+                </label>
+                <input type="file" id="photo" name="photo" class="file-input" accept="image/*">
+                <small class="text-muted d-block mt-2">Optional: Upload a profile picture</small>
+            </div>
+
+            <!-- Full Name -->
+            <div class="form-group">
+              <label style="color:#bbb;">Full Name</label>
+              <input type="text" name="name" class="form-control" required
+                  style="background:#222; color:#fff; border:1px solid #333;" value="{{ request.POST.name }}">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label style="color:#bbb;">Email</label>
+              <input type="email" name="email" class="form-control" required
+                  style="background:#222; color:#fff; border:1px solid #333;" value="{{ request.POST.email }}">
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label style="color:#bbb;">Password</label>
+              <div class="password-input-wrapper">
+                <input type="password" name="password" id="password" class="form-control" required
+                    style="background:#222; color:#fff; border:1px solid #333;">
+                <button type="button" class="password-toggle" id="togglePassword">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <div class="password-strength" id="passwordStrength"></div>
+            </div>
+
+            <!-- Interests -->
+            <div class="form-group">
+              <label style="color:#bbb;">Interests</label>
+              <input type="text" name="interests" class="form-control"
+                     placeholder="E.g. Technology, Health, Finance, Business, Education"
+                     style="background:#222; color:#fff; border:1px solid #333;"
+                     value="{{ request.POST.interests }}">
+            </div>
+
+            <!-- Goals -->
+            <div class="form-group">
+              <label style="color:#bbb;">Goals</label>
+              <textarea name="goals" rows="3" class="form-control"
+                        placeholder="What are your mentorship goals? What do you hope to achieve?"
+                        style="background:#222; color:#fff; border:1px solid #333;">{{ request.POST.goals }}</textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-block" style="background:#b73613; color:#fff; border-radius:25px;">
+                Create Account
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+    <!-- Footer -->
+    <footer class="footer section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <h4 class="text-capitalize mb-4">Company</h4>
+                    <ul class="list-unstyled footer-menu lh-35">
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 col-sm-6">
+                    <h4 class="text-capitalize mb-4">Quick Links</h4>
+                    <ul class="list-unstyled footer-menu lh-35">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <h4 class="text-capitalize mb-4">Subscribe Us</h4>
+                    <p>Subscribe to get the latest news & updates.</p>
+                    <form action="#" class="sub-form">
+                        <input type="text" class="form-control mb-3" placeholder="Subscribe Now ...">
+                        <a href="#" class="btn btn-brand btn-small">Subscribe</a>
+                    </form>
+                </div>
+                <div class="col-lg-3 ml-auto col-sm-6">
+                    <div class="logo mb-4">
+                        <h3>Re<span class="brand-highlight">Connect</span></h3>
+                    </div>
+                    <h6><a href="mailto:support@retireeconnect.com">support@retireeconnect.com</a></h6>
+                    <a href="tel:+91-9876543210"><span class="h4">+91-9876543210</span></a>
+                </div>
+            </div>
+
+            <div class="footer-btm pt-4 mt-4 border-top" style="border-color:#333;">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="copyright">
+                            &copy; 2024 RetireeConnect. All rights reserved.
+                        </div>
+                    </div>
+                    <div class="col-lg-6 text-lg-right text-sm-left">
+                        <ul class="list-inline footer-socials">
+                            <li class="list-inline-item"><a href="#"><i class="ti-facebook mr-2"></i>Facebook</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="ti-twitter mr-2"></i>Twitter</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="ti-linkedin mr-2"></i>LinkedIn</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="{% static 'plugins/jquery/jquery.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/popper.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'plugins/magnific-popup/dist/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'plugins/slick-carousel/slick/slick.min.js' %}"></script>
+    <script src="{% static 'plugins/counterup/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'plugins/counterup/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'plugins/google-map/map.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Photo upload preview
+        document.getElementById('photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photoPreview');
+                    const placeholder = document.getElementById('photoPlaceholder');
+                    
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = "";
+
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]+/)) strength++;
+            if (password.match(/[A-Z]+/)) strength++;
+            if (password.match(/[0-9]+/)) strength++;
+            if (password.match(/[!@#$%^&*(),.?":{}|<>]+/)) strength++;
+
+            const strengthElement = document.getElementById('passwordStrength');
+            
+            switch(strength) {
+                case 0:
+                case 1:
+                case 2:
+                    feedback = "Weak password";
+                    strengthElement.className = "password-strength password-weak";
+                    break;
+                case 3:
+                case 4:
+                    feedback = "Medium strength password";
+                    strengthElement.className = "password-strength password-medium";
+                    break;
+                case 5:
+                    feedback = "Strong password";
+                    strengthElement.className = "password-strength password-strong";
+                    break;
+            }
+
+            strengthElement.textContent = feedback;
+            return strength >= 3;
+        }
+
+        // Password toggle visibility
+        function togglePasswordVisibility(inputId, toggleButton) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = toggleButton.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Form validation
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const isStrongPassword = checkPasswordStrength(password);
+
+            if (!isStrongPassword) {
+                alert('Please use a stronger password (at least 8 characters with uppercase, lowercase, numbers, and special characters).');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const form = document.getElementById('registrationForm');
+
+            // Password toggle functionality
+            togglePasswordBtn.addEventListener('click', function() {
+                togglePasswordVisibility('password', this);
+            });
+
+            // Password strength check
+            passwordInput.addEventListener('input', function() {
+                checkPasswordStrength(this.value);
+            });
+
+            // Form validation
+            form.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+{% extends "Abase.html" %}
+
+{% block content %}
+<section style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); min-height:100vh; padding:40px 0;">
+    <div class="container" style="color:#bbb;">
+
+        <!-- Header -->
+        <div class="row mb-5">
+            <div class="col">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-2" style="color:#fff; font-weight:300;">User Management</h2>
+                        <p class="mb-0" style="color:#888;">Manage retirees and seekers on your platform</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-muted small">Total Users: {{ total_retirees|add:total_seekers }}</div>
+                        <div class="text-success small">Platform Status: <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #4b306a 0%, #6a48a0 100%); border:none; border-radius:16px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_retirees }}</h3>
+                                <p class="mb-0" style="color:#e0d6ff;">Total Retirees</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-user-tie" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #1f6066 0%, #2d8c94 100%); border:none; border-radius:16px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_seekers }}</h3>
+                                <p class="mb-0" style="color:#d1f7ff;">Total Seekers</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-user-graduate" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #99582a 0%, #c47a45 100%); border:none; border-radius:16px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ active_users }}</h3>
+                                <p class="mb-0" style="color:#ffe6d5;">Active Users</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-user-check" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Tabs -->
+        <div class="card mb-4" style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px;">
+            <div class="card-header"
+                style="background: #2a2a2a; border-bottom: 1px solid #333; border-radius: 16px 16px 0 0;">
+                <ul class="nav nav-tabs card-header-tabs" id="userTabs" style="border: none;">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="retirees-tab" data-bs-toggle="tab" href="#retirees"
+                            style="color: #bbb; border: none;">
+                            <i class="fas fa-user-tie me-2"></i>Retirees ({{ retirees|length }})
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="seekers-tab" data-bs-toggle="tab" href="#seekers"
+                            style="color: #bbb; border: none;">
+                            <i class="fas fa-user-graduate me-2"></i>Seekers ({{ seekers|length }})
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="tab-content" id="userTabsContent">
+                    <!-- Retirees Tab -->
+                    <div class="tab-pane fade show active" id="retirees">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" style="background: #1a1a1a; color:#ddd; border:none;">
+                                <thead style="background: #2a2a2a; color:#fff;">
+                                    <tr>
+                                        <th style="padding:20px; font-weight:500;">User Info</th>
+                                        <th style="padding:20px; font-weight:500;">Field & Experience</th>
+                                        <th style="padding:20px; font-weight:500;">Mentorship</th>
+                                        <th style="padding:20px; font-weight:500;">Status</th>
+                                        <th style="padding:20px; font-weight:500;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for retiree in retirees %}
+                                    <tr style="border-bottom:1px solid #333; transition: all 0.3s ease;">
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar me-3"
+                                                    style="width:45px; height:45px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600;">
+                                                    {{ retiree.fname|first|upper }}
+                                                </div>
+                                                <div>
+                                                    <div style="color:#fff; font-weight:500; font-size:1rem;">
+                                                        {{ retiree.fname }}
+                                                    </div>
+                                                    <small style="color:#aaa; font-size:0.85rem;">
+                                                        {{ retiree.email }}
+                                                    </small>
+                                                    <br>
+                                                    <small style="color:#888; font-size:0.8rem;">
+                                                        <i class="fas fa-briefcase me-1"></i>{{ retiree.field }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <div style="color:#fff; font-size:0.9rem;">
+                                                {{ retiree.experience }}
+                                            </div>
+                                            <small style="color:#aaa; font-size:0.8rem;">
+                                                {{ retiree.avilabilty }} Availability
+                                            </small>
+                                        </td>
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <div style="color:#fff; font-size:0.9rem;">
+                                                {{ retiree.mentorship }}
+                                            </div>
+                                            {% if retiree.other_area %}
+                                            <small style="color:#aaa; font-size:0.8rem;">
+                                                Also: {{ retiree.other_area }}
+                                            </small>
+                                            {% endif %}
+                                        </td>
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <span class="badge bg-success" style="font-size:0.8rem;">
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm me-1 view-user"
+                                                    data-user-id="{{ retiree.id }}" 
+                                                    data-user-type="retiree"
+                                                    style="background:#6c5ce7; color:#fff; border-radius:6px; border:none;">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <a href="{% url 'delete_retiree' retiree.id %}" 
+                                                   class="btn btn-sm" 
+                                                   onclick="return confirm('Are you sure you want to delete this retiree? This action cannot be undone.');"
+                                                   style="background:#dc3545; color:#fff; border-radius:6px; border:none; text-decoration: none;">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Seekers Tab -->
+                    <div class="tab-pane fade" id="seekers">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" style="background: #1a1a1a; color:#ddd; border:none;">
+                                <thead style="background: #2a2a2a; color:#fff;">
+                                    <tr>
+                                        <th style="padding:20px; font-weight:500;">User Info</th>
+                                        <th style="padding:20px; font-weight:500;">Interests & Goals</th>
+                                        <th style="padding:20px; font-weight:500;">Status</th>
+                                        <th style="padding:20px; font-weight:500;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for seeker in seekers %}
+                                    <tr style="border-bottom:1px solid #333; transition: all 0.3s ease;">
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar me-3"
+                                                    style="width:45px; height:45px; background: linear-gradient(135deg, #00b894, #55efc4); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600;">
+                                                    {{ seeker.name|first|upper }}
+                                                </div>
+                                                <div>
+                                                    <div style="color:#fff; font-weight:500; font-size:1rem;">
+                                                        {{ seeker.name }}
+                                                    </div>
+                                                    <small style="color:#aaa; font-size:0.85rem;">
+                                                        {{ seeker.email }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <div style="color:#fff; font-size:0.9rem;">
+                                                {% if seeker.interests %}
+                                                {{ seeker.interests|truncatechars:40 }}
+                                                {% else %}
+                                                Not specified
+                                                {% endif %}
+                                            </div>
+                                            {% if seeker.goals %}
+                                            <small style="color:#aaa; font-size:0.8rem;">
+                                                Goals: {{ seeker.goals|truncatechars:30 }}
+                                            </small>
+                                            {% endif %}
+                                        </td>
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <span class="badge bg-success" style="font-size:0.8rem;">
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td style="padding:20px; vertical-align: middle;">
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm me-1 view-user" 
+                                                        data-user-id="{{ seeker.id }}"
+                                                        data-user-type="seeker"
+                                                        style="background:#6c5ce7; color:#fff; border-radius:6px; border:none;">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <a href="{% url 'delete_seeker' seeker.id %}" 
+                                                   class="btn btn-sm"
+                                                   onclick="return confirm('Are you sure you want to delete this seeker? This action cannot be undone.');"
+                                                   style="background:#dc3545; color:#fff; border-radius:6px; border:none; text-decoration: none;">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- User Detail Modal -->
+<div class="modal fade" id="userDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: #1a1a1a; color: #ddd; border: 1px solid #333;">
+            <div class="modal-header" style="border-bottom: 1px solid #333;">
+                <h5 class="modal-title" style="color: #fff;">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body" id="userDetailContent">
+                <!-- User details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden user details templates -->
+<div style="display: none;">
+    {% for retiree in retirees %}
+    <div id="retiree-{{ retiree.id }}">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="user-avatar mx-auto mb-3" 
+                     style="width:80px; height:80px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); 
+                            border-radius:50%; display:flex; align-items:center; justify-content:center; 
+                            color:#fff; font-weight:600; font-size:2rem;">
+                    {{ retiree.fname|first|upper }}
+                </div>
+                <h5 style="color:#fff;">{{ retiree.fname }}</h5>
+                <span class="badge bg-primary">Retiree</span>
+            </div>
+            <div class="col-md-8">
+                <h6 style="color:#fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">User Information</h6>
+                <div class="row">
+                    <div class="col-6">
+                        <p><strong style="color: #bbb;">Email:</strong><br><span style="color: #fff;">{{ retiree.email }}</span></p>
+                        <p><strong style="color: #bbb;">Field:</strong><br><span style="color: #fff;">{{ retiree.field }}</span></p>
+                        <p><strong style="color: #bbb;">Availability:</strong><br><span style="color: #fff;">{{ retiree.avilabilty }}</span></p>
+                    </div>
+                    <div class="col-6">
+                        <p><strong style="color: #bbb;">Experience:</strong><br><span style="color: #fff;">{{ retiree.experience }}</span></p>
+                        <p><strong style="color: #bbb;">Mentorship:</strong><br><span style="color: #fff;">{{ retiree.mentorship }}</span></p>
+                        {% if retiree.other_area %}
+                        <p><strong style="color: #bbb;">Other Areas:</strong><br><span style="color: #fff;">{{ retiree.other_area }}</span></p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if retiree.bio %}
+                <p><strong style="color: #bbb;">Bio:</strong><br><span style="color: #fff;">{{ retiree.bio }}</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% for seeker in seekers %}
+    <div id="seeker-{{ seeker.id }}">
+        <div class="row">
+            <div class="col-md-5 text-center">
+                <div class="user-avatar mx-auto mb-5" 
+                     style="width:80px; height:80px; background: linear-gradient(135deg, #00b894, #55efc4); 
+                            border-radius:50%; display:flex; align-items:center; justify-content:center; 
+                            color:#fff; font-weight:600; font-size:2rem;">
+                    {{ seeker.name|first|upper }}
+                </div>
+                <h5 style="color:#fff;">{{ seeker.name }}</h5>
+                <span class="badge bg-success">Seeker</span>
+            </div>
+            <div class="col-md-8">
+                <h6 style="color:#fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">User Information</h6>
+                <div class="row">
+                    <div class="col-6">
+                        <p><strong style="color: #bbb;">Email:</strong><br><span style="color: #fff;">{{ seeker.email }}</span></p>
+                        <p><strong style="color: #bbb;">User ID:</strong><br><span style="color: #fff;">{{ seeker.id }}</span></p>
+                    </div>
+                    <div class="col-6">
+                        <p><strong style="color: #bbb;">Status:</strong><br><span class="badge bg-success">Active</span></p>
+                    </div>
+                </div>
+                {% if seeker.interests %}
+                <p><strong style="color: #bbb;">Interests:</strong><br><span style="color: #fff;">{{ seeker.interests }}</span></p>
+                {% endif %}
+                {% if seeker.goals %}
+                <p><strong style="color: #bbb;">Goals:</strong><br><span style="color: #fff;">{{ seeker.goals }}</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .admin-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table-hover tbody tr:hover {
+        background: #2a2a2a !important;
+        transform: translateY(-1px);
+    }
+
+    .nav-tabs .nav-link.active {
+        background: transparent !important;
+        border-bottom: 2px solid #6c5ce7 !important;
+        color: #6c5ce7 !important;
+    }
+
+    .nav-tabs .nav-link:hover {
+        border-color: transparent;
+        color: #6c5ce7 !important;
+    }
+
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-avatar {
+        transition: transform 0.3s ease;
+    }
+
+    tr:hover .user-avatar {
+        transform: scale(1.1);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.view-user').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const userId = this.getAttribute('data-user-id');
+                const userType = this.getAttribute('data-user-type');
+                showUserDetails(userId, userType);
+            });
+        });
+        const tabLinks = document.querySelectorAll('#userTabs .nav-link');
+        tabLinks.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = this.getAttribute('href');
+                tabLinks.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+                document.querySelector(target).classList.add('show', 'active');
+            });
+        });
+    });
+
+    function showUserDetails(userId, userType) {
+        const modalContent = document.getElementById('userDetailContent');
+
+        const templateId = userType + '-' + userId;
+        const template = document.getElementById(templateId);
+        
+        if (template) {
+            modalContent.innerHTML = template.innerHTML;
+        } else {
+            modalContent.innerHTML = `
+                <div class="text-center text-danger">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                    <p>User details not found.</p>
+                    <small>Template ID: ${templateId}</small>
+                </div>
+            `;
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('userDetailModal'));
+        modal.show();
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

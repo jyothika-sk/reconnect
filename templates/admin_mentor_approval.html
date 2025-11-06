@@ -1,0 +1,293 @@
+{% extends "Abase.html" %}
+{% block content %}
+<section style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); min-height:100vh; padding:40px 0;">
+    <div class="container" style="color:#bbb;">
+        
+        <!-- Header -->
+        <div class="row mb-5">
+            <div class="col">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-2" style="color:#fff; font-weight:300;">
+                            Mentor <span style="color:#6c5ce7; font-weight:600;">Approval</span>
+                        </h2>
+                        <p class="mb-0" style="color:#888;">Approve or reject mentor registration requests</p>
+                    </div>
+                    <div class="text-end">
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-5">
+            <div class="col-md-4 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #4b306a 0%, #6a48a0 100%); border:none; border-radius:16px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_mentors }}</h3>
+                                <p class="mb-0" style="color:#e0d6ff;">Total Mentors</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-users" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #99582a 0%, #c47a45 100%); border:none; border-radius:16px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_pending }}</h3>
+                                <p class="mb-0" style="color:#ffe6d5;">Pending Approval</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-clock" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #1f6066 0%, #2d8c94 100%); border:none; border-radius:16px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_approved }}</h3>
+                                <p class="mb-0" style="color:#d1f7ff;">Approved Mentors</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-check-circle" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Mentors Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card" style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px;">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background: #2a2a2a; border-bottom: 1px solid #333; border-radius: 16px 16px 0 0;">
+                        <h5 class="mb-0" style="color:#fff;">
+                            <i class="fas fa-clock me-2" style="color:#ffd93d;"></i>
+                            Pending Approval ({{ total_pending }})
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if pending_mentors %}
+                        <div class="table-responsive">
+                            <table class="table table-dark mb-0" style="color:#ddd;">
+                                <thead style="background: #2a2a2a;">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Field</th>
+                                        <th>Experience</th>
+                                        <th>Skills</th>
+                                        <th>Proof</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for mentor in pending_mentors %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if mentor.photo %}
+                                                <img src="{{ mentor.photo.url }}" alt="{{ mentor.fname }}" 
+                                                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
+                                                {% else %}
+                                                <div class="avatar-placeholder" 
+                                                     style="width: 40px; height: 40px; border-radius: 50%; background: #6c5ce7; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                                                    <span style="color: #fff; font-weight: bold;">{{ mentor.fname.0 }}</span>
+                                                </div>
+                                                {% endif %}
+                                                <div>
+                                                    <div style="color: #fff; font-weight: 500;">{{ mentor.fname }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ mentor.email }}</td>
+                                        <td>{{ mentor.field }}</td>
+                                        <td>{{ mentor.experience }}</td>
+                                        <td>
+                                            {% if mentor.skills %}
+                                            <small>{{ mentor.skills|truncatechars:30 }}</small>
+                                            {% else %}
+                                            <span class="text-muted">No skills listed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if mentor.proof %}
+                                            <a href="{{ mentor.proof.url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            {% else %}
+                                            <span class="text-warning">No proof</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <form method="POST" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="mentor_id" value="{{ mentor.id }}">
+                                                    <button type="submit" name="action" value="approve" 
+                                                            class="btn btn-success btn-sm">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </button>
+                                                </form>
+                                                <form method="POST" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="mentor_id" value="{{ mentor.id }}">
+                                                    <button type="submit" name="action" value="reject" 
+                                                            class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Are you sure you want to reject this mentor? This action cannot be undone.')">
+                                                        <i class="fas fa-times"></i> Reject
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5" style="color:#888;">
+                            <i class="fas fa-check-circle" style="font-size:3rem; margin-bottom:15px;"></i>
+                            <h5 style="color:#aaa;">No pending mentor requests</h5>
+                            <p class="mb-0">All mentor requests have been processed.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Mentors Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card" style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px;">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background: #2a2a2a; border-bottom: 1px solid #333; border-radius: 16px 16px 0 0;">
+                        <h5 class="mb-0" style="color:#fff;">
+                            <i class="fas fa-check-circle me-2" style="color:#51cf66;"></i>
+                            Approved Mentors ({{ total_approved }})
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if approved_mentors %}
+                        <div class="table-responsive">
+                            <table class="table table-dark mb-0" style="color:#ddd;">
+                                <thead style="background: #2a2a2a;">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Field</th>
+                                        <th>Experience</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for mentor in approved_mentors %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if mentor.photo %}
+                                                <img src="{{ mentor.photo.url }}" alt="{{ mentor.fname }}" 
+                                                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
+                                                {% else %}
+                                                <div class="avatar-placeholder" 
+                                                     style="width: 40px; height: 40px; border-radius: 50%; background: #6c5ce7; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                                                    <span style="color: #fff; font-weight: bold;">{{ mentor.fname.0 }}</span>
+                                                </div>
+                                                {% endif %}
+                                                <div>
+                                                    <div style="color: #fff; font-weight: 500;">{{ mentor.fname }}</div>
+                                                    <small class="text-success">
+                                                        <i class="fas fa-check-circle"></i> Approved
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ mentor.email }}</td>
+                                        <td>{{ mentor.field }}</td>
+                                        <td>{{ mentor.experience }}</td>
+                                        <td>
+                                            <span class="badge bg-success">Active</span>
+                                        </td>
+                                        <td>
+                                            <form method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="mentor_id" value="{{ mentor.id }}">
+                                                <button type="submit" name="action" value="revoke" 
+                                                        class="btn btn-warning btn-sm"
+                                                        onclick="return confirm('Are you sure you want to revoke approval for this mentor? They will not be able to login until approved again.')">
+                                                    <i class="fas fa-ban"></i> Revoke
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5" style="color:#888;">
+                            <i class="fas fa-users" style="font-size:3rem; margin-bottom:15px;"></i>
+                            <h5 style="color:#aaa;">No approved mentors</h5>
+                            <p class="mb-0">No mentors have been approved yet.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .admin-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table td {
+        vertical-align: middle;
+        border-color: #333;
+    }
+
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+    .avatar-placeholder {
+        background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    }
+</style>
+{% endblock %}

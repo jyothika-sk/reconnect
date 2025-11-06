@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Retiree Dashboard | Retiree Connect{% endblock %}
+
+{% block content %}
+<style>
+    /* Dashboard Hero Section */
+    .dashboard-hero {
+        position: relative;
+        min-height: 90vh;
+        background: url("{% static 'images/bg/home.jpg' %}") no-repeat center center/cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+
+    .dashboard-hero .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(182, 179, 179, 0.178) 100%);
+        z-index: 1;
+    }
+
+    .dashboard-hero .hero-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+    }
+
+    .dashboard-welcome-text {
+        color: #b73613;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .dashboard-welcome-subtext {
+        color: #fff;
+        font-size: 1.2rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Quick Stats Cards */
+    .dashboard-card {
+        background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(42, 26, 21, 0.9) 100%) !important;
+        border-radius: 15px !important;
+        padding: 1.5rem !important;
+        border: 1px solid #333 !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(183, 54, 19, 0.2);
+        border-color: #b73613 !important;
+    }
+
+    /* Dashboard Buttons */
+    .btn.dashboard-btn-brand {
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%) !important;
+        color: #fff !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        border: none !important;
+        padding: 12px 24px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(183, 54, 19, 0.3);
+    }
+
+    .btn.dashboard-btn-brand:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(183, 54, 19, 0.4);
+        color: #fff !important;
+    }
+
+    .btn.dashboard-btn-outline {
+        background: transparent !important;
+        border: 2px solid #b73613 !important;
+        color: #b73613 !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 12px 24px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .btn.dashboard-btn-outline:hover {
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%) !important;
+        color: #fff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(183, 54, 19, 0.3);
+    }
+
+    /* Chat Bubble Styles */
+    .chat-bubble-fixed {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+
+    .chat-bubble-btn {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(183, 54, 19, 0.4);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        position: relative;
+    }
+
+    .chat-bubble-btn:hover {
+        transform: translateY(-3px) scale(1.1);
+        box-shadow: 0 8px 25px rgba(183, 54, 19, 0.6);
+        color: white;
+    }
+
+    .chat-notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #dc3545;
+        color: white;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        border: 2px solid #1a1a1a;
+        animation: pulse-badge 2s infinite;
+    }
+
+    @keyframes pulse-badge {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+        }
+
+        50% {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
+        }
+
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+        }
+    }
+
+    /* Stats Numbers */
+    .dashboard-card h3 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-card p {
+        color: #ccc;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Reporting Styles */
+    .report-urgent { border-left: 4px solid #dc3545 !important; }
+    .report-medium { border-left: 4px solid #ffc107 !important; }
+    .report-low { border-left: 4px solid #0dcaf0 !important; }
+
+    /* Modal Dark Theme */
+    .modal-content {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a1a15 100%) !important;
+        border: 1px solid #444 !important;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #b73613 !important;
+        box-shadow: 0 0 0 0.2rem rgba(183, 54, 19, 0.25) !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .dashboard-welcome-text {
+            font-size: 2rem;
+        }
+
+        .dashboard-welcome-subtext {
+            font-size: 1rem;
+        }
+
+        .dashboard-card {
+            padding: 1rem !important;
+        }
+
+        .btn.dashboard-btn-brand,
+        .btn.dashboard-btn-outline {
+            padding: 10px 16px !important;
+            font-size: 0.9rem;
+        }
+
+        .chat-bubble-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+
+        .chat-notification-badge {
+            width: 18px;
+            height: 18px;
+            font-size: 0.6rem;
+        }
+    }
+</style>
+
+<!-- Dashboard Hero Section -->
+<section class="dashboard-hero text-white">
+    <div class="overlay"></div>
+    <div class="container hero-content">
+        <!-- Welcome Section -->
+        <div class="text-center mb-5">
+            <h1 class="mb-3 dashboard-welcome-text">Welcome, {{ retiree.fname }}!</h1>
+            <p class="lead mb-5 dashboard-welcome-subtext">
+                Here's an overview of your activity on <span class="fw-bold" style="color: #ffa500;">Retiree
+                    Connect</span>.
+            </p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row g-4 justify-content-center mb-5">
+            <div class="col-6 col-md-3">
+                <div class="card text-white dashboard-card text-center">
+                    <h3>{{ total_requests|default:"0" }}</h3>
+                    <p class="mb-2">Mentorship Requests</p>
+                    <small class="text-muted">Total requests received</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card text-white dashboard-card text-center">
+                    <h3>{{ total_blogs|default:"0" }}</h3>
+                    <p class="mb-2">Blogs Posted</p>
+                    <small class="text-muted">Your published content</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card text-white dashboard-card text-center">
+                    <h3>{{ total_pending|default:"0" }}</h3>
+                    <p class="mb-2">Pending Requests</p>
+                    <small class="text-muted">Awaiting your response</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card text-white dashboard-card text-center">
+                    <h3>{{ conversations_count|default:"0" }}</h3>
+                    <p class="mb-2">Active Chats</p>
+                    <small class="text-muted">Ongoing conversations</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row g-3 justify-content-center">
+            <div class="col-6 col-md-3">
+                <a href="{% url 'add_blog' retiree.id %}"
+                    class="btn dashboard-btn-brand w-100 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-pencil-square me-2"></i>Add Blog
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{% url 'mentorship_requests' %}"
+                    class="btn dashboard-btn-outline w-100 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-list-check me-2"></i>View Requests
+                </a>
+            </div>
+            <!-- In your Rdashboard.html action buttons -->
+            <div class="col-6 col-md-3">
+                <a href="{% url 'retiree_chat_inbox' %}" class="btn dashboard-btn-brand w-100">
+                    <i class="bi bi-chat-dots me-2"></i>Messages
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{% url 'mentor_dashboardprofile' %}"
+                    class="btn dashboard-btn-outline w-100 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-person-circle me-2"></i>Profile
+                </a>
+            </div>
+            
+            <!-- NEW: Report to Admin Button -->
+            <div class="col-6 col-md-3 mt-3">
+                <a href="{% url 'submit_report' %}" class="btn dashboard-btn-outline w-100 d-flex align-items-center justify-content-center" 
+                        data-bs-toggle="modal" data-bs-target="#reportModal">
+                    <i class="bi bi-flag me-2"></i>Report Issue
+            </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Simple Working Chat Bubble -->
+<div style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+    <a href="{% url 'retiree_chat_inbox' %}"
+        style="display: block; width: 60px; height: 60px; background: #b73613; color: white; border-radius: 50%; text-align: center; line-height: 60px; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: relative;">
+        💬
+        {% if unread_messages_count > 0 %}
+        <span
+            style="position: absolute; top: 5px; right: 5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.7rem; line-height: 20px;">
+            {{ unread_messages_count }}
+        </span>
+        {% endif %}
+    </a>
+</div>
+
+<!-- Report to Admin Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1a1a1a 0%, #2a1a15 100%); border: 1px solid #333;">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-white" id="reportModalLabel">
+                    <i class="bi bi-flag-fill me-2 text-warning"></i>Report to Admin
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm" method="POST" action="{% url 'submit_report' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="reporter_id" value="{{ retiree.id }}">
+                    
+                    <div class="mb-3">
+                        <label for="reportType" class="form-label text-white">Report Type</label>
+                        <select class="form-select" id="reportType" name="report_type" required 
+                                style="background: #2a2a2a; border: 1px solid #444; color: #fff;">
+                            <option value="">Select issue type...</option>
+                            <option value="technical">Technical Issue</option>
+                            <option value="harassment">Harassment/Bullying</option>
+                            <option value="inappropriate_content">Inappropriate Content</option>
+                            <option value="spam">Spam or Scam</option>
+                            <option value="bug">Website Bug</option>
+                            <option value="suggestion">Feature Suggestion</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reportTitle" class="form-label text-white">Title</label>
+                        <input type="text" class="form-control" id="reportTitle" name="title" 
+                               placeholder="Brief description of the issue" required
+                               style="background: #2a2a2a; border: 1px solid #444; color: #fff;">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reportDescription" class="form-label text-white">Detailed Description</label>
+                        <textarea class="form-control" id="reportDescription" name="description" 
+                                  rows="5" placeholder="Please provide detailed information about the issue..."
+                                  style="background: #2a2a2a; border: 1px solid #444; color: #fff;"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reportUrgency" class="form-label text-white">Urgency Level</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="urgency" id="lowUrgency" value="low" checked>
+                            <label class="form-check-label text-muted" for="lowUrgency">Low - General issue</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="urgency" id="mediumUrgency" value="medium">
+                            <label class="form-check-label text-warning" for="mediumUrgency">Medium - Needs attention</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="urgency" id="highUrgency" value="high">
+                            <label class="form-check-label text-danger" for="highUrgency">High - Urgent attention required</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="anonymousReport" name="anonymous">
+                        <label class="form-check-label text-muted" for="anonymousReport">Submit anonymously</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="reportForm" class="btn dashboard-btn-brand">
+                    <i class="bi bi-send me-2"></i>Submit Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Success Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="reportToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-dark text-white">
+            Your report has been submitted successfully. We'll review it shortly.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const toast = new bootstrap.Toast(document.getElementById('reportToast'));
+                toast.show();                
+                const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                modal.hide();
+                
+                this.reset();
+            } else {
+                alert('Error submitting report: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error submitting report. Please try again.');
+        });
+    });
+</script>
+
+{% endblock %}

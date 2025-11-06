@@ -1,0 +1,648 @@
+{% extends "Sbase.html" %}
+
+{% load static %}
+{% block title %}Seeker Dashboard | Retiree Connect{% endblock %}
+
+{% block head %}
+<style>
+:root {
+    --brand-color: #b73613;
+    --dark-bg: #111;
+    --medium-bg: #1a1a1a;
+    --light-text: #bbb;
+    --white: #fff;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 80vh;
+    background: url('{% static 'images/bg/welcome-bj.jpg' %}') center center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 100%;
+    padding: 0 20px;
+}
+
+/* Profile Image */
+.profile-image-container {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--brand-color);
+    box-shadow: 0 4px 15px rgba(183, 54, 19, 0.3);
+    transition: all 0.3s ease;
+}
+
+.profile-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(183, 54, 19, 0.4);
+}
+
+/* Default profile image styling */
+.default-profile {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-color) 0%, #92270e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--brand-color);
+    box-shadow: 0 4px 15px rgba(183, 54, 19, 0.3);
+    margin: 0 auto;
+}
+
+.default-profile i {
+    font-size: 3rem;
+    color: var(--white);
+}
+
+/* Buttons */
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.btn.btn-brand {
+    background-color: var(--brand-color) !important;
+    color: var(--white) !important;
+    border-radius: 30px !important;
+    font-size: 0.9rem;
+    padding: 12px 25px !important;
+    border: none !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn.btn-brand:hover {
+    background-color: #92270e !important;
+    color: var(--white) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(183, 54, 19, 0.3);
+}
+
+.btn.btn-outline-light-custom {
+    border: 2px solid var(--white) !important;
+    color: var(--white) !important;
+    background: transparent !important;
+    border-radius: 30px !important;
+    font-size: 0.9rem;
+    padding: 10px 25px !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.btn.btn-outline-light-custom:hover {
+    background: var(--white) !important;
+    color: var(--dark-bg) !important;
+    transform: translateY(-2px);
+}
+
+/* Sections */
+.section {
+    padding: 80px 0;
+}
+
+.section-title {
+    margin-bottom: 60px;
+    text-align: center;
+}
+
+.section-title h2 {
+    color: var(--white);
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Service Items */
+.service-item {
+    padding: 30px 20px;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    text-align: center;
+    height: 100%;
+}
+
+.service-item:hover {
+    background-color: rgba(183, 54, 19, 0.05);
+    transform: translateY(-5px);
+}
+
+.service-item i {
+    margin-bottom: 20px;
+    display: block;
+}
+
+.service-item h4 {
+    color: var(--white);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.service-item p {
+    color: var(--light-text);
+    margin: 0;
+}
+
+/* Testimonials */
+.testimonial blockquote {
+    border-left: 3px solid var(--brand-color);
+    padding-left: 20px;
+    margin-bottom: 30px;
+}
+
+.blockquote {
+    border-left: 4px solid var(--brand-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+.blockquote p {
+    color: var(--light-text);
+    margin-bottom: 15px;
+}
+
+.blockquote-footer {
+    color: var(--brand-color) !important;
+    font-size: 0.9rem;
+}
+
+/* Icons */
+.display-4 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--brand-color);
+}
+
+/* Brand Highlight */
+.brand-highlight {
+    color: var(--brand-color);
+}
+
+/* Modal Styling */
+.modal-content {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a1a15 100%) !important;
+    border: 1px solid #444 !important;
+    border-radius: 15px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #444 !important;
+}
+
+.modal-footer {
+    border-top: 1px solid #444 !important;
+}
+
+.form-control, .form-select {
+    background: #2a2a2a !important;
+    border: 1px solid #444 !important;
+    color: var(--white) !important;
+    border-radius: 8px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--brand-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(183, 54, 19, 0.25) !important;
+    background: #2a2a2a !important;
+    color: var(--white) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--brand-color);
+    border-color: var(--brand-color);
+}
+
+.form-check-label {
+    color: var(--light-text) !important;
+}
+
+/* Toast Styling */
+.toast {
+    background: var(--dark-bg);
+    border: 1px solid #444;
+    border-radius: 8px;
+}
+
+.toast-header {
+    background: var(--brand-color);
+    color: var(--white);
+    border-bottom: 1px solid #444;
+}
+
+/* Text Colors */
+.text-white {
+    color: var(--white) !important;
+}
+
+.text-muted {
+    color: #777 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section {
+        padding: 60px 0;
+    }
+    
+    .hero-section {
+        min-height: 60vh;
+    }
+    
+    .btn-block {
+        margin-bottom: 10px;
+    }
+    
+    .service-item {
+        margin-bottom: 30px;
+    }
+    
+    .hero-content .row {
+        margin: 0 -10px;
+    }
+    
+    .hero-content .col-md-3 {
+        padding: 0 10px;
+        margin-bottom: 15px;
+    }
+    
+    .profile-image {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .default-profile {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .default-profile i {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        min-height: 70vh;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    .btn.btn-brand,
+    .btn.btn-outline-light-custom {
+        padding: 10px 20px !important;
+        font-size: 0.85rem;
+    }
+    
+    .profile-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .default-profile {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .default-profile i {
+        font-size: 2rem;
+    }
+}
+
+/* Ensure proper alignment */
+.container {
+    max-width: 1200px;
+}
+
+.row {
+    margin: 0 -15px;
+}
+
+.col-md-3, .col-lg-3, .col-md-6, .col-lg-6 {
+    padding: 0 15px;
+}
+
+/* Center align all content */
+.text-center {
+    text-align: center !important;
+}
+
+.justify-content-center {
+    justify-content: center !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+/* Fix button alignment in hero section */
+.hero-content .row {
+    justify-content: center;
+}
+
+.hero-content .col-md-3 {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-content .btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content text-white">
+        <div class="container">
+            <!-- Profile Image -->
+            <div class="profile-image-container">
+                {% if seeker.photo %}
+                    <img src="{{ seeker.photo.url }}" alt="{{ seeker.name }}" class="profile-image">
+                {% else %}
+                    <div class="default-profile">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <h2 class="mb-4 fw-bold">Welcome, {{ seeker.name }}!</h2>
+            <p class="mb-5 lead">This is your Seeker Dashboard. Explore mentors, read blogs, and manage your mentorship requests.</p>
+
+            <div class="row justify-content-center">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <a href="{% url 'mentors_browsing' %}" class="btn btn-brand btn-block">Browse Mentors</a>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <a href="{% url 'seeker_blog_feed' %}" class="btn btn-outline-light-custom">Read Blogs</a>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <a href="{% url 'seeker_mentorship_requests' %}" class="btn btn-brand btn-block">My Requests</a>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <a href="{% url 'submit_report' %}" class="btn btn-outline-light-custom" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        Report Issue
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="section" style="background-color: var(--dark-bg);">
+    <div class="container text-center">
+        <div class="section-title">
+            <h2>About <span class="brand-highlight">Retiree Connect</span></h2>
+        </div>
+        <p class="mb-5 mx-auto" style="color: var(--light-text); max-width: 800px;">
+            Retiree Connect is designed to bridge the gap between experienced retirees and the younger generation.
+            Through mentorship, storytelling, and shared resources, we ensure that valuable wisdom never gets lost.
+        </p>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section" style="background-color: var(--dark-bg);">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Features</h2>
+        </div>
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-item">
+                    <i class="ti-comments display-4"></i>
+                    <h4 class="mt-3">Experience Sharing</h4>
+                    <p>Share real-life experiences that inspire and educate others.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-item">
+                    <i class="ti-user display-4"></i>
+                    <h4 class="mt-3">Mentorship</h4>
+                    <p>Guide the younger generation with your knowledge and wisdom.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-item">
+                    <i class="ti-heart display-4"></i>
+                    <h4 class="mt-3">Community Support</h4>
+                    <p>Engage with a supportive community of like-minded individuals.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-item">
+                    <i class="ti-book display-4"></i>
+                    <h4 class="mt-3">Resources</h4>
+                    <p>Access guides, articles, and workshops tailored for retirees.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section" style="background-color: var(--dark-bg);">
+    <div class="container text-center">
+        <div class="section-title">
+            <h2>What Our Members Say</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 mb-4">
+                <blockquote class="blockquote">
+                    <p class="mb-4">"Joining Retiree Connect has given me purpose after retirement. I love mentoring young professionals."</p>
+                    <footer class="blockquote-footer">Mr. George, Retired Teacher</footer>
+                </blockquote>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <blockquote class="blockquote">
+                    <p class="mb-4">"The wisdom I received from mentors here is priceless. Truly a life-changing experience."</p>
+                    <footer class="blockquote-footer">Anna, Young Professional</footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="section" style="background-color: var(--dark-bg);">
+    <div class="container text-center">
+        <div class="section-title">
+            <h2>Ready to Join Our Community?</h2>
+        </div>
+        <a href="{% url 'mentors_browsing' %}" class="btn btn-brand" style="padding: 12px 30px;">Get Started</a>
+    </div>
+</section>
+
+<!-- Report to Admin Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-white" id="reportModalLabel">
+                    <i class="bi bi-flag-fill me-2 text-warning"></i>Report to Admin
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm" method="POST" action="{% url 'submit_report' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="reporter_type" value="seeker">
+                    <input type="hidden" name="reporter_id" value="{{ seeker.id }}">
+                    
+                    <div class="mb-3">
+                        <label for="reportType" class="form-label text-white">Report Type</label>
+                        <select class="form-select" id="reportType" name="report_type" required>
+                            <option value="">Select issue type...</option>
+                            <option value="technical">Technical Issue</option>
+                            <option value="harassment">Harassment/Bullying</option>
+                            <option value="inappropriate_content">Inappropriate Content</option>
+                            <option value="spam">Spam or Scam</option>
+                            <option value="bug">Website Bug</option>
+                            <option value="suggestion">Feature Suggestion</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reportTitle" class="form-label text-white">Title</label>
+                        <input type="text" class="form-control" id="reportTitle" name="title" 
+                               placeholder="Brief description of the issue" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reportDescription" class="form-label text-white">Detailed Description</label>
+                        <textarea class="form-control" id="reportDescription" name="description" 
+                                  rows="5" placeholder="Please provide detailed information about the issue..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-white">Urgency Level</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="urgency" id="lowUrgency" value="low" checked>
+                            <label class="form-check-label" for="lowUrgency">Low - General issue</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="urgency" id="mediumUrgency" value="medium">
+                            <label class="form-check-label" for="mediumUrgency">Medium - Needs attention</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="urgency" id="highUrgency" value="high">
+                            <label class="form-check-label" for="highUrgency">High - Urgent attention required</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="anonymousReport" name="anonymous">
+                        <label class="form-check-label" for="anonymousReport">Submit anonymously</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="reportForm" class="btn btn-brand">
+                    <i class="bi bi-send me-2"></i>Submit Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Success Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="reportToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-dark text-white">
+            Your report has been submitted successfully. We'll review it shortly.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reportForm = document.getElementById('reportForm');
+        if (reportForm) {
+            reportForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const toast = new bootstrap.Toast(document.getElementById('reportToast'));
+                        toast.show();
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                        modal.hide();                
+                        this.reset();
+                    } else {
+                        alert('Error submitting report: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error submitting report. Please try again.');
+                });
+            });
+        }
+    });
+</script>
+
+{% endblock %}

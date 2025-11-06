@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Seeker Login - Retiree Connect{% endblock %}
+
+{% block content %}
+<section class="py-5" style="background:#111; min-height:100vh; display:flex; align-items:center; justify-content:center;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+        <div class="card shadow-lg p-4" style="background:#1a1a1a; border-radius:16px; border:none;">
+          <h3 class="text-center mb-4" style="color:#fff;">Seeker Login</h3>
+          
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label style="color:#bbb;">Email</label>
+              <input type="email" name="email" class="form-control" required
+                     style="background:#222; color:#fff; border:1px solid #333;">
+            </div>
+            <div class="form-group">
+              <label style="color:#bbb;">Password</label>
+              <input type="password" name="password" class="form-control" required
+                     style="background:#222; color:#fff; border:1px solid #333;">
+            </div>
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-block" 
+                      style="background:#b73613; color:#fff; border-radius:25px;">
+                Login
+              </button>
+            </div>
+          </form>
+          <p class="text-center mt-3" style="color:#bbb;">Don't have an account? 
+            <a href="{% url 'SRegistration' %}" style="color:#b73613;">Register</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

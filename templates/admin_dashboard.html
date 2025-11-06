@@ -1,0 +1,502 @@
+{% extends "Abase.html" %}
+{% block content %}
+<section style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); min-height:100vh; padding:40px 0;">
+    <div class="container" style="color:#bbb;">
+
+        <div class="row mb-5">
+            <div class="col">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-2" style="color:#fff; font-weight:300;">Welcome back, <span
+                                style="color:#6c5ce7; font-weight:600;">Admin</span></h2>
+                        <p class="mb-0" style="color:#888;">Here's what's happening with your platform today</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-muted small">{{ current_date }}</div>
+                        <div class="text-success small">Platform Status: <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-3 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #4b306a 0%, #6a48a0 100%); border:none; border-radius:16px; transition: all 0.3s ease; cursor: pointer;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_retirees }}</h3>
+                                <p class="mb-0" style="color:#e0d6ff;">Total Retirees</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-users" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small style="color:#d0c4ff;">Active members sharing wisdom</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #1f6066 0%, #2d8c94 100%); border:none; border-radius:16px; transition: all 0.3s ease; cursor: pointer;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_seekers }}</h3>
+                                <p class="mb-0" style="color:#d1f7ff;">Total Seekers</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-search" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small style="color:#b8f0ff;">Seeking knowledge & guidance</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #99582a 0%, #c47a45 100%); border:none; border-radius:16px; transition: all 0.3s ease; cursor: pointer;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_blogs }}</h3>
+                                <p class="mb-0" style="color:#ffe6d5;">Total Blogs</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-blog" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small style="color:#ffd9bf;">Stories and experiences shared</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #6a1a1a 0%, #9e2a2a 100%); border:none; border-radius:16px; transition: all 0.3s ease; cursor: pointer;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ pending_follow_requests }}</h3>
+                                <p class="mb-0" style="color:#ffd6d6;">Pending Follows</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-user-plus" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small style="color:#ffbfbf;">Awaiting your approval</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #1a4a6a 0%, #2d7c94 100%); border:none; border-radius:16px; transition: all 0.3s ease; cursor: pointer;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ total_reports }}</h3>
+                                <p class="mb-0" style="color:#d1f7ff;">Total Reports</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-flag" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small style="color:#b8f0ff;">
+                                {{ pending_reports }} pending • {{ high_urgency_reports }} urgent
+                            </small>
+                        </div>
+                        <div class="mt-2">
+                            <a href="{% url 'admin_report_management' %}" class="btn btn-sm text-white mt-2" 
+                               style="background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.8rem;">
+                                <i class="fas fa-cog me-1"></i> Manage Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Mentorship Requests Card -->
+            <div class="col-md-3 mb-4">
+                <div class="card admin-card h-100"
+                    style="background: linear-gradient(135deg, #5a3a7a 0%, #7a5a9a 100%); border:none; border-radius:16px; transition: all 0.3s ease; cursor: pointer;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2" style="color:#fff; font-size:2rem;">{{ pending_mentorship_requests }}</h3>
+                                <p class="mb-0" style="color:#e6d6ff;">Pending Mentorships</p>
+                            </div>
+                            <div class="icon-circle" style="background: rgba(255,255,255,0.2);">
+                                <i class="fas fa-handshake" style="color:#fff; font-size:1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small style="color:#d9c4ff;">Awaiting mentor approval</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="row mb-4">
+            <!-- Recent Blogs -->
+            <div class="col-md-6 mb-4">
+                <div class="card" style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px; height: 100%;">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background: #2a2a2a; border-bottom: 1px solid #333; border-radius: 16px 16px 0 0;">
+                        <h5 class="mb-0" style="color:#fff;">
+                            <i class="fas fa-newspaper me-2" style="color:#6c5ce7;"></i>
+                            Recent Blogs
+                        </h5>
+                        <span class="badge" style="background: #6c5ce7; color:#fff;">{{ recent_blogs|length }} items</span>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if recent_blogs %}
+                        <div class="list-group list-group-flush">
+                            {% for blog in recent_blogs %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center" 
+                                 style="background: #1a1a1a; border-bottom: 1px solid #333; cursor: pointer;"
+                                 onclick="showBlogDetails('{{ blog.id }}')">
+                                <div class="flex-grow-1">
+                                    <div style="color:#fff; font-weight:500; font-size:0.95rem; margin-bottom: 4px;">
+                                        {{ blog.title|truncatechars:40 }}
+                                    </div>
+                                    <small style="color:#aaa; font-size:0.8rem;">
+                                        By {{ blog.author.fname }} • {{ blog.created_at|date:"M d, Y" }}
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge {% if blog.published %}bg-success{% else %}bg-warning text-dark{% endif %}"
+                                          style="font-size:0.7rem; font-weight:500;">
+                                        {{ blog.published|yesno:"Published,Draft" }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5" style="color:#888;">
+                            <i class="fas fa-inbox" style="font-size:2rem; margin-bottom:10px;"></i>
+                            <p class="mb-0">No blogs found</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Reports -->
+            <div class="col-md-6 mb-4">
+                <div class="card" style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px; height: 100%;">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background: #2a2a2a; border-bottom: 1px solid #333; border-radius: 16px 16px 0 0;">
+                        <h5 class="mb-0" style="color:#fff;">
+                            <i class="fas fa-flag me-2" style="color:#ff6b6b;"></i>
+                            Recent Reports
+                        </h5>
+                        <a href="{% url 'admin_report_management' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if recent_reports %}
+                        <div class="list-group list-group-flush">
+                            {% for report in recent_reports %}
+                            <div class="list-group-item" style="background: #1a1a1a; border-bottom: 1px solid #333;">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="flex-grow-1">
+                                        <div style="color:#fff; font-weight:500; font-size:0.95rem; margin-bottom: 4px;">
+                                            {{ report.title|truncatechars:40 }}
+                                        </div>
+                                        <small style="color:#aaa; font-size:0.8rem;">
+                                            {% if report.get_reporter %}
+                                                {{ report.get_reporter_type|title }}: {{ report.get_reporter.fname }}
+                                            {% else %}
+                                                Anonymous
+                                            {% endif %}
+                                            • {{ report.created_at|timesince }} ago
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-{% if report.urgency == 'high' %}danger{% elif report.urgency == 'medium' %}warning{% else %}info{% endif %}"
+                                              style="font-size:0.7rem;">
+                                            {{ report.get_urgency_display }}
+                                        </span>
+                                        <span class="badge bg-secondary" style="font-size:0.7rem;">
+                                            {{ report.get_report_type_display }}
+                                        </span>
+                                    </div>
+                                    <span class="badge bg-{% if report.status == 'pending' %}warning{% elif report.status == 'resolved' %}success{% else %}primary{% endif %}"
+                                          style="font-size:0.7rem;">
+                                        {{ report.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5" style="color:#888;">
+                            <i class="fas fa-flag" style="font-size:2rem; margin-bottom:10px;"></i>
+                            <p class="mb-0">No recent reports</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Follow Requests & Mentorship Requests -->
+        <div class="row">
+            <!-- Recent Follow Requests -->
+            <div class="col-md-6 mb-4">
+                <div class="card" style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px;">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background: #2a2a2a; border-bottom: 1px solid #333; border-radius: 16px 16px 0 0;">
+                        <h5 class="mb-0" style="color:#fff;">
+                            <i class="fas fa-user-plus me-2" style="color:#ffd93d;"></i>
+                            Recent Follow Requests
+                        </h5>
+                        <span class="badge" style="background: #ffd93d; color:#000;">{{ recent_follow_requests|length }} items</span>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if recent_follow_requests %}
+                        <div class="list-group list-group-flush">
+                            {% for request in recent_follow_requests %}
+                            <div class="list-group-item" style="background: #1a1a1a; border-bottom: 1px solid #333;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div style="color:#fff; font-weight:500; font-size:0.95rem;">
+                                            {{ request.seeker.name }} → {{ request.retiree.fname }}
+                                        </div>
+                                        <small style="color:#aaa; font-size:0.8rem;">
+                                            {{ request.created_at|timesince }} ago
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-warning text-dark" style="font-size:0.7rem;">
+                                        {{ request.status }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5" style="color:#888;">
+                            <i class="fas fa-user-plus" style="font-size:2rem; margin-bottom:10px;"></i>
+                            <p class="mb-0">No follow requests</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Mentorship Requests -->
+            <div class="col-md-6 mb-4">
+                <div class="card" style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px;">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background: #2a2a2a; border-bottom: 1px solid #333; border-radius: 16px 16px 0 0;">
+                        <h5 class="mb-0" style="color:#fff;">
+                            <i class="fas fa-handshake me-2" style="color:#6cce7;"></i>
+                            Recent Mentorship Requests
+                        </h5>
+                        <span class="badge" style="background: #6c5ce7; color:#fff;">{{ recent_mentorship_requests|length }} items</span>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if recent_mentorship_requests %}
+                        <div class="list-group list-group-flush">
+                            {% for request in recent_mentorship_requests %}
+                            <div class="list-group-item" style="background: #1a1a1a; border-bottom: 1px solid #333;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div style="color:#fff; font-weight:500; font-size:0.95rem;">
+                                            {{ request.learner.name }} → {{ request.mentor.fname }}
+                                        </div>
+                                        <small style="color:#aaa; font-size:0.8rem;">
+                                            Topic: {{ request.topic|truncatechars:30 }}
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-{% if request.status == 'Pending' %}warning{% elif request.status == 'Accepted' %}success{% else %}danger{% endif %}"
+                                          style="font-size:0.7rem;">
+                                        {{ request.status }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5" style="color:#888;">
+                            <i class="fas fa-handshake" style="font-size:2rem; margin-bottom:10px;"></i>
+                            <p class="mb-0">No mentorship requests</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<div class="modal fade" id="blogDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: #1a1a1a; color: #ddd; border: 1px solid #333;">
+            <div class="modal-header" style="border-bottom: 1px solid #333;">
+                <h5 class="modal-title" style="color: #fff;">Blog Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body" id="blogDetailContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: none;">
+    {% for blog in recent_blogs %}
+    <div id="blog-{{ blog.id }}">
+        <div class="text-center mb-4">
+            {% if blog.image %}
+            <img src="{{ blog.image.url }}" alt="{{ blog.title }}"
+                style="max-width: 100%; max-height: 300px; border-radius: 10px; object-fit: cover;">
+            {% else %}
+            <div class="blog-placeholder"
+                style="width: 100%; height: 200px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-file-alt" style="color: #fff; font-size: 3rem;"></i>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="blog-content mb-4">
+            <h3 style="color: #fff; margin-bottom: 15px; text-align: center;">{{ blog.title }}</h3>
+            {% if blog.content %}
+            <div
+                style="color: #ddd; line-height: 1.6; font-size: 1rem; background: #2a2a2a; padding: 20px; border-radius: 10px;">
+                {{ blog.content|linebreaks }}
+            </div>
+            {% else %}
+            <div class="text-center py-4" style="color: #888;">
+                <i class="fas fa-file-alt fa-2x mb-3"></i>
+                <p>No content available for this blog</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="posted-by" style="border-top: 1px solid #333; padding-top: 15px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <small style="color: #aaa;">Posted by:</small>
+                <span style="color: #fff; font-weight: 500;">{{ blog.author.fname }}</span>
+                <small style="color: #888;">•</small>
+                <small style="color: #aaa;">{{ blog.created_at|date:"M d, Y" }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .admin-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .list-group-item {
+        transition: all 0.3s ease;
+        border: none !important;
+    }
+
+    .list-group-item:hover {
+        background: #2a2a2a !important;
+        transform: translateY(-1px);
+    }
+
+    .card {
+        color: #ddd !important;
+    }
+
+    .card-header {
+        color: #fff !important;
+        font-weight: 600 !important;
+    }
+
+    .blog-content {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .blog-content::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .blog-content::-webkit-scrollbar-track {
+        background: #2a2a2a;
+        border-radius: 3px;
+    }
+
+    .blog-content::-webkit-scrollbar-thumb {
+        background: #6c5ce7;
+        border-radius: 3px;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.admin-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        function showBlogDetails(blogId) {
+            const modalContent = document.getElementById('blogDetailContent');
+
+            const templateId = 'blog-' + blogId;
+            const template = document.getElementById(templateId);
+
+            if (template) {
+                modalContent.innerHTML = template.innerHTML;
+            } else {
+                modalContent.innerHTML = `
+                <div class="text-center text-danger py-4">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                    <p>Blog details not found.</p>
+                </div>
+            `;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('blogDetailModal'));
+            modal.show();
+        }
+
+        window.showBlogDetails = showBlogDetails;
+    });
+</script>
+{% endblock %}

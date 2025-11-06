@@ -1,0 +1,812 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Blog Feed | Retiree Connect{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    .blog-feed-section {
+        background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .blog-feed-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+    }
+
+    .page-header {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid #333;
+        box-shadow: 0 8px 32px rgba(183, 54, 19, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        color: #fff;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+        color: #bbb;
+        font-size: 1.1rem;
+    }
+
+    .blog-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border-radius: 20px;
+        padding: 25px;
+        border: 1px solid #333;
+        margin-bottom: 25px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .blog-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+        transition: left 0.6s ease;
+    }
+
+    .blog-card:hover::before {
+        left: 100%;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 50px rgba(183, 54, 19, 0.15);
+        border-color: #444;
+    }
+
+    .blog-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .author-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 2px solid #333;
+        transition: all 0.3s ease;
+    }
+
+    .blog-card:hover .author-avatar {
+        border-color: #b73613;
+        transform: scale(1.05);
+    }
+
+    .author-info {
+        flex-grow: 1;
+    }
+
+    .author-name {
+        color: #b73613;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .author-field {
+        color: #bbb;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .blog-date {
+        color: #888;
+        font-size: 0.85rem;
+    }
+
+    .blog-title {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        line-height: 1.3;
+    }
+
+    .blog-image {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid #444;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .blog-card:hover .blog-image {
+        transform: scale(1.02);
+    }
+
+    .blog-content-preview {
+        color: #ccc;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .blog-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .blog-tag {
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%);
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .blog-stats {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+    }
+
+    .blog-stat {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #bbb;
+        font-size: 0.9rem;
+    }
+
+    .blog-stat i {
+        color: #b73613;
+    }
+
+    .blog-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .blog-action-btn {
+        background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+        color: #fff;
+        border: 1px solid #444;
+        border-radius: 10px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .blog-action-btn:hover {
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+        border-color: #b73613;
+        transform: translateY(-2px);
+        color: #fff;
+    }
+
+    .btn-like {
+        background: linear-gradient(135deg, #ff6b6b 0%, #b73613 100%);
+        border-color: #ff6b6b;
+    }
+
+    .btn-comment {
+        background: linear-gradient(135deg, #1e90ff 0%, #0066cc 100%);
+        border-color: #1e90ff;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+        border-color: #ffa500;
+        color: #111;
+    }
+
+    .btn-save.saved {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-color: #28a745;
+        color: #fff;
+    }
+
+    .btn-read {
+        background: linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%);
+        border-color: #6f42c1;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+        color: #444;
+    }
+
+    .empty-state h4 {
+        color: #bbb;
+        margin-bottom: 15px;
+    }
+
+    .empty-state p {
+        color: #888;
+        margin-bottom: 25px;
+    }
+
+    .pagination-container {
+        margin-top: 40px;
+    }
+
+    .pagination-dark .page-link {
+        background: #1c1c1c;
+        color: #fff;
+        border: 1px solid #444;
+        border-radius: 10px;
+        margin: 0 4px;
+        padding: 10px 18px;
+        transition: all 0.3s ease;
+    }
+
+    .pagination-dark .page-item.active .page-link {
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+        border-color: #b73613;
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+    .pagination-dark .page-link:hover {
+        background: #2a2a2a;
+        border-color: #b73613;
+        transform: translateY(-2px);
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Comment Section Styles */
+    .comment-section {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333;
+        margin-top: 20px;
+        display: none;
+    }
+
+    .comment-form textarea {
+        background: #1c1c1c;
+        border: 1px solid #444;
+        color: #fff;
+        border-radius: 10px;
+        padding: 12px;
+        width: 100%;
+        resize: vertical;
+        min-height: 80px;
+        transition: all 0.3s ease;
+    }
+
+    .comment-form textarea:focus {
+        border-color: #b73613;
+        box-shadow: 0 0 0 2px rgba(183, 54, 19, 0.2);
+        outline: none;
+    }
+
+    .comment-item {
+        background: #1a1a1a;
+        border-radius: 10px;
+        padding: 15px;
+        border: 1px solid #333;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .comment-item:hover {
+        border-color: #444;
+        transform: translateX(5px);
+    }
+
+    .comment-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #333;
+    }
+
+    /* Missing CSS styles added */
+    .floating-action {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+    }
+
+    .scroll-to-top {
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 25px rgba(183, 54, 19, 0.4);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .scroll-to-top:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 12px 35px rgba(183, 54, 19, 0.6);
+    }
+
+    @media (max-width: 768px) {
+        .blog-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .blog-actions {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .page-header {
+            padding: 20px;
+        }
+
+        .blog-card {
+            padding: 20px;
+        }
+        
+        .floating-action {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .scroll-to-top {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="blog-feed-section py-5">
+    <div class="container">
+        <!-- Messages Display -->
+        {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Debug Info -->
+        <div class="text-white mb-4" style="background: #1a1a1a; padding: 15px; border-radius: 10px;">
+            <p><strong>Debug Info:</strong> Total blogs: {{ blogs|length }} | Current retiree: {{ current_retiree.fname|default:"Not logged in" }}</p>
+        </div>
+
+        <!-- Blogs List -->
+        {% if blogs %}
+            {% for blog in blogs %}
+            <div class="blog-card fade-in" style="animation-delay: {{ forloop.counter0|add:0.1 }}s;">
+                <!-- Blog Header -->
+                <div class="blog-header">
+                    {% if blog.author.photo %}
+                    <img src="{{ blog.author.photo.url }}" alt="{{ blog.author.fname }}" class="author-avatar">
+                    {% else %}
+                    <div class="author-avatar d-flex align-items-center justify-content-center bg-dark">
+                        <i class="bi bi-person-fill" style="color: #666;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="author-info">
+                        <div class="author-name">{{ blog.author.fname }}</div>
+                        <div class="author-field">{{ blog.author.field|default:"Retiree Mentor" }}</div>
+                        <div class="blog-date">{{ blog.created_at|date:"F j, Y" }}</div>
+                    </div>
+                </div>
+
+                <!-- Blog Content -->
+                <h2 class="blog-title">{{ blog.title }}</h2>
+
+                {% if blog.image %}
+                <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="blog-image">
+                {% endif %}
+
+                <div class="blog-content-preview">
+                    {{ blog.content }} 
+                </div>
+
+                <!-- Tags -->
+                {% if blog.tags.all %}
+                <div class="blog-tags">
+                    {% for tag in blog.tags.all %}
+                    <span class="blog-tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Stats -->
+                <div class="blog-stats">
+                    <div class="blog-stat">
+                        <i class="bi bi-hand-thumbs-up"></i>
+                        <span class="likes-count-{{ blog.id }}">{{ blog.likes_count }} likes</span>
+                    </div>
+                    <div class="blog-stat">
+                        <i class="bi bi-chat"></i>
+                        <!-- FIXED: Show total comments from both types -->
+                        <span class="comments-count-{{ blog.id }}">{{ blog.Retireecomments.count|add:blog.comments.count }} comments</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="blog-actions">
+                    <!-- Like Button -->
+                    {% if current_retiree %}
+                    <form action="{% url 'retiree_like_blog' blog.id %}" method="post" class="d-inline like-form" id="like-form-{{ blog.id }}">
+                        {% csrf_token %}
+                        <button type="submit" class="blog-action-btn btn-like {% if blog.is_liked %}liked{% endif %}">
+                            <i class="bi bi-hand-thumbs-up{% if blog.is_liked %}-fill{% endif %}"></i>
+                            <span class="like-text">{% if blog.is_liked %}Liked{% else %}Like{% endif %}</span>
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'Rlogin' %}" class="blog-action-btn btn-like">
+                        <i class="bi bi-hand-thumbs-up"></i>
+                        Like
+                    </a>
+                    {% endif %}
+
+                    <!-- Comment Button -->
+                    <button class="blog-action-btn btn-comment" onclick="toggleComments({{ blog.id }})">
+                        <i class="bi bi-chat"></i>
+                        Comment
+                    </button>
+
+                    <!-- Save Button -->
+                    {% if current_retiree %}
+                    <form action="{% url 'retiree_save_blog' blog.id %}" method="post" class="d-inline save-form" id="save-form-{{ blog.id }}">
+                        {% csrf_token %}
+                        <button type="submit" class="blog-action-btn btn-save {% if blog.is_saved %}saved{% endif %}">
+                            <i class="bi {% if blog.is_saved %}bi-bookmark-check-fill{% else %}bi-bookmark-plus{% endif %}"></i>
+                            <span class="save-text">{% if blog.is_saved %}Saved{% else %}Save{% endif %}</span>
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'Rlogin' %}" class="blog-action-btn btn-save">
+                        <i class="bi bi-bookmark-plus"></i>
+                        Save
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Comment Section (Hidden by default) -->
+                <div id="comments-section-{{ blog.id }}" class="comment-section">
+                    <h5 class="text-light mb-3">Comments</h5>
+                    
+                    <!-- Comment Form -->
+                    {% if current_retiree %}
+                    <form action="{% url 'retiree_add_comment' blog.id %}" method="post" class="comment-form mb-3">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <textarea name="comment" class="form-control" placeholder="Write your comment..." required></textarea>
+                        </div>
+                        <button type="submit" class="blog-action-btn btn-comment">
+                            <i class="bi bi-send-fill"></i>
+                            Post Comment
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-dark text-center mb-3">
+                        <a href="{% url 'Rlogin' %}" class="text-warning">Log in</a> to post comments
+                    </div>
+                    {% endif %}
+
+                    <!-- Comments List - FIXED: Show both retiree and seeker comments -->
+                    <div class="comments-list">
+                        <!-- Show retiree comments first -->
+                        {% for comment in blog.Retireecomments.all|slice:":5" %}
+                        <div class="comment-item">
+                            <div class="d-flex align-items-start">
+                                {% if comment.retiree.photo %}
+                                <img src="{{ comment.retiree.photo.url }}" alt="{{ comment.retiree.fname }}" class="comment-avatar me-3">
+                                {% else %}
+                                <div class="comment-avatar me-3 d-flex align-items-center justify-content-center bg-dark">
+                                    <i class="bi bi-person-fill" style="color: #666;"></i>
+                                </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <strong class="text-light">{{ comment.retiree.fname }}</strong>
+                                        <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                                    </div>
+                                    <p class="text-light mb-0">{{ comment.comment }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <!-- Then show seeker comments -->
+                        {% for comment in blog.comments.all|slice:":5" %}
+                        <div class="comment-item">
+                            <div class="d-flex align-items-start">
+                                {% if comment.user.photo %}
+                                <img src="{{ comment.user.photo.url }}" alt="{{ comment.user.name }}" class="comment-avatar me-3">
+                                {% else %}
+                                <div class="comment-avatar me-3 d-flex align-items-center justify-content-center bg-dark">
+                                    <i class="bi bi-person-fill" style="color: #666;"></i>
+                                </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <strong class="text-light">{{ comment.user.name }}</strong>
+                                        <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                                    </div>
+                                    <p class="text-light mb-0">{{ comment.comment }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if not blog.Retireecomments.all and not blog.comments.all %}
+                        <div class="text-center py-3">
+                            <p class="text-muted">No comments yet. Be the first to comment!</p>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Total comments count --->
+                        {% with total_comments=blog.Retireecomments.count|add:blog.comments.count %}
+                            {% if total_comments > 5 %}
+                            <div class="text-center mt-3">
+                                <a href="{% url 'retiree_blog_detail' blog.id %}" class="text-warning text-decoration-none">
+                                    View all {{ total_comments }} comments
+                                </a>
+                            </div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if page_obj.paginator.num_pages > 1 %}
+            <div class="pagination-container">
+                <nav aria-label="Blog pagination">
+                    <ul class="pagination pagination-dark justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                        </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state fade-in">
+                <i class="bi bi-newspaper"></i>
+                <h4>No Blogs Available</h4>
+                <p>There are no blogs to display at the moment. Check back later for new content.</p>
+                {% if current_retiree %}
+                <a href="{% url 'add_blog' current_retiree.id %}" class="blog-action-btn btn-like">
+                    <i class="bi bi-pencil-square"></i>
+                    Write First Blog
+                </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="floating-action">
+        <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+    </div>
+</section>
+
+<script>
+    function toggleComments(blogId) {
+        const section = document.getElementById('comments-section-' + blogId);
+        if (section.style.display === 'block') {
+            section.style.display = 'none';
+        } else {
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.like-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                const blogId = form.id.split('-')[2];
+                const button = form.querySelector('button');
+                const likeText = button.querySelector('.like-text');
+                const icon = button.querySelector('i');
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: new FormData(form)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        if (data.liked) {
+                            button.classList.add('liked');
+                            icon.className = 'bi bi-hand-thumbs-up-fill';
+                            likeText.textContent = 'Liked';
+                        } else {
+                            button.classList.remove('liked');
+                            icon.className = 'bi bi-hand-thumbs-up';
+                            likeText.textContent = 'Like';
+                        }
+                        
+                        const likesCountElement = document.querySelector('.likes-count-' + blogId);
+                        if (likesCountElement) {
+                            likesCountElement.textContent = data.likes_count + ' likes';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+
+        document.querySelectorAll('.save-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                const button = form.querySelector('button');
+                const saveText = button.querySelector('.save-text');
+                const icon = button.querySelector('i');
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: new FormData(form)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        if (data.saved) {
+                            button.classList.add('saved');
+                            icon.className = 'bi bi-bookmark-check-fill';
+                            saveText.textContent = 'Saved';
+                        } else {
+                            button.classList.remove('saved');
+                            icon.className = 'bi bi-bookmark-plus';
+                            saveText.textContent = 'Save';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('scroll', function() {
+        const scrollBtn = document.querySelector('.scroll-to-top');
+        if (window.scrollY > 300) {
+            scrollBtn.style.opacity = '1';
+            scrollBtn.style.visibility = 'visible';
+        } else {
+            scrollBtn.style.opacity = '0';
+            scrollBtn.style.visibility = 'hidden';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollBtn = document.querySelector('.scroll-to-top');
+        scrollBtn.style.opacity = '0';
+        scrollBtn.style.visibility = 'hidden';
+        
+        const blogCards = document.querySelectorAll('.blog-card');
+        blogCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}

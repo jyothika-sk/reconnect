@@ -1,0 +1,768 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Retiree Connect - Experience Sharing & Mentorship">
+    <meta name="author" content="">
+    <title>{% block title %}Retiree Connect{% endblock %}</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/themify/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/magnific-popup/dist/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/slick-carousel/slick/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/slick-carousel/slick/slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body {
+            background-color: #111;
+            color: #bbb;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #000 !important;
+        }
+
+        .navbar .nav-link {
+            color: #fff !important;
+            transition: 0.3s;
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-item.active .nav-link {
+            color: #b73613 !important;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        .navbar-brand span {
+            color: #b73613;
+        }
+
+        /* Buttons */
+        .btn-brand {
+            background-color: #b73613 !important;
+            color: #fff !important;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 4px 14px;
+            border: none;
+        }
+
+        .btn-brand:hover {
+            background-color: #92270e !important;
+            color: #fff !important;
+        }
+
+        .btn-outline-brand {
+            border: 1px solid #b73613;
+            color: #b73613;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 4px 14px;
+            transition: 0.3s;
+        }
+
+        .btn-outline-brand:hover {
+            background-color: #b73613;
+            color: #fff;
+        }
+
+        /* Footer */
+        .footer {
+            background: #111;
+            color: #bbb;
+        }
+
+        .footer h4 {
+            color: #b73613;
+        }
+
+        .footer a {
+            color: #bbb;
+            transition: 0.3s;
+        }
+
+        .footer a:hover {
+            color: #b73613;
+        }
+
+        .footer .copyright {
+            color: #777;
+        }
+
+        .brand-highlight {
+            color: #b73613;
+        }
+
+        /* Links */
+        a {
+            color: #b73613;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar .fa-bell {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .navbar .fa-bell:hover {
+            color: #b73613;
+        }
+
+        .navbar .nav-link.admin-link {
+            color: #f0c674;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .navbar .nav-link.admin-link:hover {
+            color: #b73613;
+            text-decoration: underline;
+        }
+
+        /* Password validation styles */
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+
+        .password-weak {
+            color: #dc3545;
+        }
+
+        .password-medium {
+            color: #fd7e14;
+        }
+
+        .password-strong {
+            color: #28a745;
+        }
+
+        .password-match {
+            color: #28a745;
+        }
+
+        .password-mismatch {
+            color: #dc3545;
+        }
+
+        .phone-valid {
+            color: #28a745;
+        }
+
+        .phone-invalid {
+            color: #dc3545;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .form-control.is-valid {
+            border-color: #28a745;
+        }
+
+        .field-suggestions {
+            position: absolute;
+            background: #1c1c1c;
+            border: 1px solid #444;
+            border-radius: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            width: 100%;
+            display: none;
+        }
+
+        .field-suggestion {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: #bbb;
+        }
+
+        .field-suggestion:hover {
+            background: #b73613;
+            color: #fff;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        /* Password toggle eye icon */
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.3s ease;
+            padding-top: 6px;
+            z-index: 5;
+        }
+
+        .password-toggle:hover {
+            color: #b73613;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-input-wrapper .form-control {
+            padding-right: 45px;
+        }
+
+        .optional-text {
+            color: #888;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navigation">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    Re<span class="brand-highlight">Connect</span>
+                </a>
+                <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="fa fa-bars" style="color:#fff;"></span>
+                </button>
+
+                <div class="collapse navbar-collapse text-center" id="navbarsExample09">
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Public navbar -->
+                        <li class="nav-item active"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'public_blog_list' %}">Blogs</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'admin_login' %}">Admin</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle btn btn-sm btn-outline-brand" href="#"
+                                id="registerDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">Register</a>
+                            <ul class="dropdown-menu" aria-labelledby="registerDropdown" style="background:#1a1a1a;">
+                                <li><a class="dropdown-item" href="{% url 'RRegistration' %}"
+                                        style="color:#e3dad8;">Register as
+                                        Retiree</a></li>
+                                <li><a class="dropdown-item" href="{% url 'SRegistration' %}"
+                                        style="color:#e3dad8;">Register as
+                                        Seeker</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="btn btn-sm btn-brand ml-2" href="{% url 'Rlogin' %}">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+<main>
+    <section class="py-5"
+        style="background:#111; min-height:100vh; display:flex; align-items:center; justify-content:center;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="card shadow-lg p-4" style="background:#1a1a1a; border-radius:16px; border:none;">
+
+                        <!-- Heading -->
+                        <h3 class="text-center mb-3" style="color:#fff;">
+                            Retiree <span style="color:#b73613;">Registration</span>
+                        </h3>
+                        <p class="text-center mb-4" style="color:#bbb;">
+                            Already have an account?
+                            <a href="{% url 'Rlogin' %}" style="color:#b73613;">Login</a>
+                        </p>
+
+                        <!-- Form -->
+                        <form method="post" enctype="multipart/form-data" id="registrationForm">
+                            {% csrf_token %}
+
+                            <!-- Full Name -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Full Name</label>
+                                <input type="text" name="name" class="form-control" required
+                                    style="background:#222; color:#fff; border:1px solid #333;" value="{{ request.POST.name }}">
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Email</label>
+                                <input type="email" name="email" class="form-control" required
+                                    style="background:#222; color:#fff; border:1px solid #333;" value="{{ request.POST.email }}">
+                            </div>
+
+                            <!-- Phone - UPDATED WITH VALIDATION -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Phone Number <span class="optional-text"></span></label>
+                                <input type="tel" name="phone" id="phoneInput" class="form-control"
+                                    pattern="[\+]?[0-9\s\-\(\)]{10,}"
+                                    title="Please enter a valid phone number (10-15 digits)"
+                                    style="background:#222; color:#fff; border:1px solid #333;" 
+                                    value="{{ request.POST.phone }}"
+                                    placeholder="e.g., +1234567890 or 1234567890">
+                                <div class="password-strength" id="phoneValidation"></div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Password</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" name="password" id="password" class="form-control" required
+                                        style="background:#222; color:#fff; border:1px solid #333;">
+                                    <button type="button" class="password-toggle" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength" id="passwordStrength"></div>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Confirm Password</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" name="confirm_password" id="confirmPassword" class="form-control" required
+                                        style="background:#222; color:#fff; border:1px solid #333;">
+                                    <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength" id="passwordMatch"></div>
+                            </div>
+
+                            <!-- Field of Work -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Field of Work</label>
+                                <input type="text" name="field" id="fieldInput" class="form-control" required
+                                    style="background:#222; color:#fff; border:1px solid #333;" 
+                                    placeholder="Start typing your field (e.g., Software Engineering, Teaching, Medicine...)"
+                                    value="{{ request.POST.field }}">
+                                <div class="field-suggestions" id="fieldSuggestions"></div>
+                            </div>
+
+                            <!-- Experience -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Years of Experience</label>
+                                <input type="number" name="experience" min="1" class="form-control" required
+                                    style="background:#222; color:#fff; border:1px solid #333;" value="{{ request.POST.experience }}">
+                            </div>
+
+                            <!-- Short Bio -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Short Bio</label>
+                                <textarea name="bio" rows="3" class="form-control" required
+                                    style="background:#222; color:#fff; border:1px solid #333;">{{ request.POST.bio }}</textarea>
+                            </div>
+
+                            <!-- Retirement Proof -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Retirement Proof</label>
+                                <input type="file" name="retirement_proof" accept=".jpg,.png,.pdf" required class="form-control"
+                                    style="background:#222; color:#fff; border:1px solid #333;">
+                            </div>
+
+                            <!-- Profile Photo -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Profile Photo</label>
+                                <input type="file" name="photo" accept="image/*" required class="form-control"
+                                    style="background:#222; color:#fff; border:1px solid #333;">
+                            </div>
+
+                            <!-- Mentorship Areas -->
+                            <div class="form-group">
+                                <label style="color:#bbb;">Areas of Mentorship</label><br>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="career" name="mentorship" value="career" 
+                                        {% if "career" in request.POST.mentorship %}checked{% endif %}>
+                                    <label class="form-check-label text-light" for="career">Career Guidance</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="entrepreneurship" name="mentorship"
+                                        value="entrepreneurship" {% if "entrepreneurship" in request.POST.mentorship %}checked{% endif %}>
+                                    <label class="form-check-label text-light" for="entrepreneurship">Entrepreneurship</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="personal" name="mentorship" value="personal"
+                                        {% if "personal" in request.POST.mentorship %}checked{% endif %}>
+                                    <label class="form-check-label text-light" for="personal">Personal Development</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="technical" name="mentorship" value="technical"
+                                        {% if "technical" in request.POST.mentorship %}checked{% endif %}>
+                                    <label class="form-check-label text-light" for="technical">Technical Skills</label>
+                                </div>
+
+                                <!-- Others Option -->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="others" name="mentorship" value="others"
+                                        onclick="toggleOtherMentorship()" {% if "others" in request.POST.mentorship %}checked{% endif %}>
+                                    <label class="form-check-label text-light" for="others">Others</label>
+                                </div>
+
+                                <div id="otherMentorshipField" class="mt-2" style="display:{% if request.POST.other_mentorship %}block{% else %}none{% endif %};">
+                                    <input type="text" class="form-control" name="other_mentorship" placeholder="Please specify other area"
+                                        style="background:#222; color:#fff; border:1px solid #333;" value="{{ request.POST.other_mentorship }}">
+                                </div>
+                            </div>
+
+                            <!-- Skills -->
+                            <div class="form-group mb-4">
+                                <label style="color:#bbb;">Skills</label>
+                                <input type="text" name="skills" placeholder="Enter your skills (comma separated)" class="form-control"
+                                    style="background:#222; color:#fff; border:1px solid #333;" value="{{ request.POST.skills }}">
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label style="color:#bbb;">Availability</label>
+                                <select name="avilabilty" class="form-control" style="background:#222; color:#fff; border:1px solid #333;"
+                                    required>
+                                    <option value="" disabled selected>Select your availability</option>
+                                    <option value="Morning" {% if request.POST.avilabilty == "Morning" %}selected{% endif %}>Morning</option>
+                                    <option value="Evening" {% if request.POST.avilabilty == "Evening" %}selected{% endif %}>Evening</option>
+                                </select>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-block" style="background:#b73613; color:#fff; border-radius:25px;">
+                                    Register
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+    <!-- Footer -->
+    <footer class="footer section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <h4 class="text-capitalize mb-4">Company</h4>
+                    <ul class="list-unstyled footer-menu lh-35">
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 col-sm-6">
+                    <h4 class="text-capitalize mb-4">Quick Links</h4>
+                    <ul class="list-unstyled footer-menu lh-35">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <h4 class="text-capitalize mb-4">Subscribe Us</h4>
+                    <p>Subscribe to get the latest news & updates.</p>
+                    <form action="#" class="sub-form">
+                        <input type="text" class="form-control mb-3" placeholder="Subscribe Now ...">
+                        <a href="#" class="btn btn-brand btn-small">Subscribe</a>
+                    </form>
+                </div>
+                <div class="col-lg-3 ml-auto col-sm-6">
+                    <div class="logo mb-4">
+                        <h3>Re<span class="brand-highlight">Connect</span></h3>
+                    </div>
+                    <h6><a href="mailto:support@retireeconnect.com">support@retireeconnect.com</a></h6>
+                    <a href="tel:+91-9876543210"><span class="h4">+91-9876543210</span></a>
+                </div>
+            </div>
+
+            <div class="footer-btm pt-4 mt-4 border-top" style="border-color:#333;">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="copyright">
+                            &copy; {{ year }} RetireeConnect. All rights reserved.
+                        </div>
+                    </div>
+                    <div class="col-lg-6 text-lg-right text-sm-left">
+                        <ul class="list-inline footer-socials">
+                            <li class="list-inline-item"><a href="#"><i class="ti-facebook mr-2"></i>Facebook</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="ti-twitter mr-2"></i>Twitter</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="ti-linkedin mr-2"></i>LinkedIn</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="{% static 'plugins/jquery/jquery.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/popper.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'plugins/magnific-popup/dist/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'plugins/slick-carousel/slick/slick.min.js' %}"></script>
+    <script src="{% static 'plugins/counterup/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'plugins/counterup/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'plugins/google-map/map.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const fieldSuggestions = [
+            "Software Engineering", "Data Science", "UI/UX Design", "Business Management", 
+            "Marketing", "Teaching", "Engineering", "Medicine", "Business", "Arts", 
+            "Finance", "Healthcare", "Education", "Technology", "Consulting", 
+            "Research", "Architecture", "Law", "Accounting", "Human Resources",
+            "Operations", "Sales", "Customer Service", "Project Management",
+            "Product Management", "Quality Assurance", "Network Administration",
+            "Cybersecurity", "Digital Marketing", "Content Writing", "Graphic Design"
+        ];
+
+        function togglePasswordVisibility(inputId, toggleButton) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = toggleButton.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = "";
+
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]+/)) strength++;
+            if (password.match(/[A-Z]+/)) strength++;
+            if (password.match(/[0-9]+/)) strength++;
+            if (password.match(/[!@#$%^&*(),.?":{}|<>]+/)) strength++;
+
+            const strengthElement = document.getElementById('passwordStrength');
+            
+            switch(strength) {
+                case 0:
+                case 1:
+                case 2:
+                    feedback = "Weak password";
+                    strengthElement.className = "password-strength password-weak";
+                    break;
+                case 3:
+                case 4:
+                    feedback = "Medium strength password";
+                    strengthElement.className = "password-strength password-medium";
+                    break;
+                case 5:
+                    feedback = "Strong password";
+                    strengthElement.className = "password-strength password-strong";
+                    break;
+            }
+
+            strengthElement.textContent = feedback;
+            return strength >= 3; 
+        }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchElement = document.getElementById('passwordMatch');
+
+            if (confirmPassword === "") {
+                matchElement.textContent = "";
+                return false;
+            }
+
+            if (password === confirmPassword) {
+                matchElement.textContent = "Passwords match";
+                matchElement.className = "password-strength password-match";
+                return true;
+            } else {
+                matchElement.textContent = "Passwords do not match";
+                matchElement.className = "password-strength password-mismatch";
+                return false;
+            }
+        }
+        function validatePhoneNumber(phone) {
+            const cleanedPhone = phone.replace(/[\s\-\(\)]/g, '');
+            const phoneRegex = /^[\+]?[0-9]{10}$/;
+            return phoneRegex.test(cleanedPhone);
+        }
+
+        function checkPhoneValidation() {
+            const phoneInput = document.getElementById('phoneInput');
+            const phone = phoneInput.value.trim();
+            const validationElement = document.getElementById('phoneValidation');
+            phoneInput.classList.remove('is-invalid');
+            phoneInput.classList.remove('is-valid');
+            
+            if (phone === '') {
+                validationElement.textContent = "";
+                validationElement.className = "password-strength";
+                return true;
+            }
+            
+            if (validatePhoneNumber(phone)) {
+                phoneInput.classList.add('is-valid');
+                validationElement.textContent = "Valid phone number";
+                validationElement.className = "password-strength phone-valid";
+                return true;
+            } else {
+                phoneInput.classList.add('is-invalid');
+                validationElement.textContent = "Please enter a valid phone number (10-15 digits, may start with +)";
+                validationElement.className = "password-strength phone-invalid";
+                return false;
+            }
+        }
+
+        function showFieldSuggestions(input) {
+            const suggestionsContainer = document.getElementById('fieldSuggestions');
+            const value = input.value.toLowerCase();
+            
+            if (value.length < 2) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+
+            const filtered = fieldSuggestions.filter(field => 
+                field.toLowerCase().includes(value)
+            );
+
+            if (filtered.length === 0) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+
+            suggestionsContainer.innerHTML = filtered.map(field => 
+                `<div class="field-suggestion" onclick="selectFieldSuggestion('${field}')">${field}</div>`
+            ).join('');
+            suggestionsContainer.style.display = 'block';
+        }
+
+        function selectFieldSuggestion(field) {
+            document.getElementById('fieldInput').value = field;
+            document.getElementById('fieldSuggestions').style.display = 'none';
+        }
+
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const isStrongPassword = checkPasswordStrength(password);
+            const isMatchingPassword = checkPasswordMatch();
+            const isPhoneValid = checkPhoneValidation();
+
+            if (!isStrongPassword) {
+                alert('Please use a stronger password (at least 8 characters with uppercase, lowercase, numbers, and special characters).');
+                return false;
+            }
+
+            if (!isMatchingPassword) {
+                alert('Passwords do not match. Please make sure both passwords are the same.');
+                return false;
+            }
+
+            if (!isPhoneValid) {
+                alert('Please enter a valid phone number (10-15 digits, may start with +).');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const fieldInput = document.getElementById('fieldInput');
+            const phoneInput = document.getElementById('phoneInput');
+            const form = document.getElementById('registrationForm');
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPassword');
+            togglePasswordBtn.addEventListener('click', function() {
+                togglePasswordVisibility('password', this);
+            });
+
+            toggleConfirmPasswordBtn.addEventListener('click', function() {
+                togglePasswordVisibility('confirmPassword', this);
+            });
+            
+            passwordInput.addEventListener('input', checkPasswordStrength);
+            confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            phoneInput.addEventListener('input', checkPhoneValidation);
+            phoneInput.addEventListener('blur', checkPhoneValidation);
+
+            fieldInput.addEventListener('input', function() {
+                showFieldSuggestions(this);
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.form-group')) {
+                    document.getElementById('fieldSuggestions').style.display = 'none';
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                }
+            });
+
+            if (passwordInput.value) {
+                checkPasswordStrength(passwordInput.value);
+            }
+            if (confirmPasswordInput.value) {
+                checkPasswordMatch();
+            }
+            if (phoneInput.value) {
+                checkPhoneValidation();
+            }
+        });
+
+        function toggleOtherMentorship() {
+            const checkbox = document.getElementById("others");
+            const field = document.getElementById("otherMentorshipField");
+            field.style.display = checkbox.checked ? "block" : "none";
+        }
+    </script>
+
+</body>
+
+</html>

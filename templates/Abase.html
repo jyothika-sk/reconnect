@@ -1,0 +1,263 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Retiree Connect - Admin Dashboard">
+  <meta name="author" content="">
+  <title>{% block title %}Admin Dashboard - Retiree Connect{% endblock %}</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/themify/css/themify-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/magnific-popup/dist/magnific-popup.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/slick-carousel/slick/slick.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/slick-carousel/slick/slick-theme.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+      color: #ddd;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: #000 !important;
+      border-bottom: 2px solid #b73613;
+    }
+
+    .navbar .nav-link {
+      color: #fff !important;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    .navbar .nav-link:hover,
+    .navbar .nav-item.active .nav-link {
+      color: #b73613 !important;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      color: #fff !important;
+      font-size: 1.5rem;
+    }
+
+    .navbar-brand span {
+      color: #b73613;
+    }
+
+    /* Buttons */
+    .btn-brand {
+      background-color: #b73613 !important;
+      color: #fff !important;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      padding: 4px 14px;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .btn-brand:hover {
+      background-color: #92270e !important;
+      color: #fff !important;
+      transform: translateY(-1px);
+    }
+
+    /* Footer */
+    .footer {
+      background: #111;
+      color: #bbb;
+      border-top: 1px solid #333;
+    }
+
+    .footer h4 {
+      color: #b73613;
+    }
+
+    .footer a {
+      color: #bbb;
+      transition: 0.3s;
+    }
+
+    .footer a:hover {
+      color: #b73613;
+    }
+
+    .footer .copyright {
+      color: #777;
+    }
+
+    .brand-highlight {
+      color: #b73613;
+    }
+
+    /* Links */
+    a {
+      color: #b73613;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* Admin-specific components */
+    .admin-body .btn {
+      border-radius: 8px !important;
+    }
+
+    .admin-body .table {
+      color: #ddd !important;
+    }
+
+    .admin-body .card {
+      border: 1px solid #333 !important;
+      background: #1a1a1a;
+    }
+
+    /* Navbar toggle */
+    .navbar-toggler {
+      border: 1px solid #b73613;
+    }
+
+    .navbar-toggler:focus {
+      box-shadow: 0 0 0 0.2rem rgba(183, 54, 19, 0.25);
+    }
+  </style>
+
+  {% block head %}{% endblock %}
+</head>
+
+<body class="admin-body">
+  <!-- Admin Navbar -->
+  <header class="navigation">
+    <nav class="navbar navbar-expand-lg py-3">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'admin_dashboard' %}">
+          Re<span class="brand-highlight">Connect</span> Admin
+        </a>
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="fa fa-bars" style="color:#fff;"></span>
+        </button>
+
+        <div class="collapse navbar-collapse text-center" id="navbarsExample09">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+              </a>
+            </li>
+           <!-- In your Abase.html navigation -->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin_mentor_approval' %}">
+                <i class="fas fa-user-check me-1"></i> Mentor Approval
+              </a>
+            </li>
+            <!-------l---->
+            <li class="nav-item {% if request.resolver_match.url_name == 'admin_user_management' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'admin_user_management' %}">
+                <i class="fas fa-users me-2"></i>Users
+              </a>
+            </li>
+            <li class="nav-item {% if request.resolver_match.url_name == 'admin_blog_management' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'admin_blog_management' %}">
+                <i class="fas fa-blog me-2"></i>Blogs
+              </a>
+            </li>
+            <li
+              class="nav-item {% if request.resolver_match.url_name == 'admin_mentorship_management' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'admin_mentorship_management' %}">
+                <i class="fas fa-handshake me-2"></i>Mentorship
+              </a>
+            </li>
+            <li class="nav-item {% if request.resolver_match.url_name == 'admin_report_management' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'admin_report_management' %}">
+                <i class="fas fa-flag me-2"></i>Reports
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-sm btn-brand ml-3" href="{% url 'admin_logout' %}">
+                <i class="fas fa-sign-out-alt me-1"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer section py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <h4 class="text-capitalize mb-4">Admin</h4>
+          <ul class="list-unstyled footer-menu lh-35">
+            <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+
+            <li><a href="{% url 'admin_user_management' %}">User Management</a></li>
+            <li><a href="{% url 'admin_blog_management' %}">Content Management</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <h4 class="text-capitalize mb-4">Quick Links</h4>
+          <ul class="list-unstyled footer-menu lh-35">
+            <li><a href="{% url 'admin_mentorship_management' %}">Mentorship</a></li>
+            <li><a href="{% url 'admin_report_management' %}">Reports</a></li>
+            <li><a href="#">Settings</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 ml-auto col-sm-6">
+          <div class="logo mb-4">
+            <h3>Re<span class="brand-highlight">Connect</span> Admin</h3>
+          </div>
+          <h6><a href="mailto:admin@retireeconnect.com">admin@retireeconnect.com</a></h6>
+          <a href="tel:+91-9876543210"><span class="h4">+91-9876543210</span></a>
+        </div>
+      </div>
+
+      <div class="footer-btm pt-4 mt-4 border-top" style="border-color:#333;">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="copyright">
+              &copy; {{ year }} RetireeConnect Admin Panel. All rights reserved.
+            </div>
+          </div>
+          <div class="col-lg-6 text-lg-right text-sm-left">
+            <ul class="list-inline footer-socials">
+              <li class="list-inline-item"><a href="#"><i class="ti-facebook mr-2"></i>Facebook</a></li>
+              <li class="list-inline-item"><a href="#"><i class="ti-twitter mr-2"></i>Twitter</a></li>
+              <li class="list-inline-item"><a href="#"><i class="ti-linkedin mr-2"></i>LinkedIn</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="{% static 'plugins/jquery/jquery.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/popper.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'plugins/magnific-popup/dist/jquery.magnific-popup.min.js' %}"></script>
+  <script src="{% static 'plugins/slick-carousel/slick/slick.min.js' %}"></script>
+  <script src="{% static 'plugins/counterup/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static 'plugins/counterup/jquery.counterup.min.js' %}"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+
+  {% block scripts %}{% endblock %}
+</body>
+
+</html>

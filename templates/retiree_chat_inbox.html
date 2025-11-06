@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Messages | Retiree Connect{% endblock %}
+
+{% block head %}
+<style>
+.conversations-list {
+    background: linear-gradient(145deg, #1c1c1c 0%, #222 100%);
+    border-radius: 16px;
+    border: 1px solid #333;
+    padding: 0;
+}
+
+.conversation-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.conversation-item:hover {
+    background: #2a2a2a;
+    text-decoration: none;
+    color: inherit;
+}
+
+.conversation-item:last-child {
+    border-bottom: none;
+}
+
+.conversation-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #444;
+}
+
+.conversation-info {
+    flex: 1;
+}
+
+.conversation-name {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.conversation-preview {
+    color: #bbb;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.conversation-time {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.unread-badge {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: block;
+    color: #444;
+}
+
+.page-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5" style="background-color:#111; min-height:100vh;">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="display-5 fw-bold">Your Messages</h1>
+            <p class="lead mb-0">Connect with seekers who reached out to you</p>
+        </div>
+
+        <!-- Conversations List -->
+        <div class="conversations-list">
+            {% if conversations %}
+                {% for conversation in conversations %}
+                <a href="{% url 'retiree_chat' conversation.seeker.id %}" class="conversation-item">
+                    <img src="{{ conversation.seeker.photo.url|default:'/static/default-avatar.png' }}" 
+                         alt="{{ conversation.seeker.name }}" class="conversation-avatar">
+                    <div class="conversation-info">
+                        <div class="conversation-name">{{ conversation.seeker.name }}</div>
+                        <div class="conversation-preview">
+                            {{ conversation.last_message|truncatechars:50 }}
+                        </div>
+                        {% if conversation.last_message_time %}
+                        <div class="conversation-time">
+                            {{ conversation.last_message_time|timesince }} ago
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if conversation.unread_count %}
+                    <div class="unread-badge">{{ conversation.unread_count }}</div>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-chat-dots"></i>
+                    <h4 class="text-white mb-3">No messages yet</h4>
+                    <p class="mb-4">When seekers message you, your conversations will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

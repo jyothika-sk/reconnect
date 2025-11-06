@@ -1,0 +1,595 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Blog | Retiree Connect{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<style>
+    .blog-create-section {
+        background: linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 50%, #111 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .blog-create-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+    }
+
+    .create-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border-radius: 20px;
+        padding: 40px;
+        border: 1px solid #333;
+        box-shadow: 0 15px 50px rgba(183, 54, 19, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .create-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #b73613, #ff6b6b, #ffa500, #b73613);
+        background-size: 200% 100%;
+        animation: shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-title {
+        color: #fff;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+        color: #bbb;
+        font-size: 1.1rem;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control-custom {
+        background: #1c1c1c !important;
+        border: 1px solid #444 !important;
+        color: #fff !important;
+        border-radius: 12px !important;
+        padding: 12px 16px !important;
+        transition: all 0.3s ease !important;
+        font-size: 1rem !important;
+    }
+
+    .form-control-custom:focus {
+        border-color: #b73613 !important;
+        box-shadow: 0 0 0 3px rgba(183, 54, 19, 0.2) !important;
+        transform: translateY(-2px);
+    }
+
+    .form-control-custom::placeholder {
+        color: #666 !important;
+    }
+
+    .stats-bar {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+        padding: 15px;
+        background: linear-gradient(145deg, #1a1a1a 0%, #222 100%);
+        border-radius: 12px;
+        border: 1px solid #333;
+    }
+
+    .stat-item {
+        text-align: center;
+        flex: 1;
+    }
+
+    .stat-number {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #b73613;
+        margin-bottom: 2px;
+    }
+
+    .stat-label {
+        color: #bbb;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .emoji-section {
+        background: linear-gradient(145deg, #1a1a1a 0%, #222 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333;
+        margin-top: 20px;
+    }
+
+    .emoji-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .emoji-btn {
+        background: #2a2a2a;
+        border: 1px solid #444;
+        color: #fff;
+        border-radius: 10px;
+        padding: 8px;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .emoji-btn:hover {
+        background: #b73613;
+        border-color: #b73613;
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(183, 54, 19, 0.3);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid #333;
+    }
+
+    .action-btn {
+        flex: 1;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+
+    .btn-publish {
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+        color: #fff;
+    }
+
+    .btn-publish:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(183, 54, 19, 0.4);
+    }
+
+    .btn-draft {
+        background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+        color: #fff;
+        border: 1px solid #444;
+    }
+
+    .btn-draft:hover {
+        background: linear-gradient(135deg, #333 0%, #444 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-cancel {
+        background: transparent;
+        color: #bbb;
+        border: 1px solid #444;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: #2a2a2a;
+        color: #fff;
+        transform: translateY(-3px);
+    }
+
+    .image-preview {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .preview-image {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 12px;
+        border: 2px solid #444;
+        display: none;
+    }
+
+    .writing-tips {
+        background: linear-gradient(145deg, #1a1a1a 0%, #222 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333;
+        margin-top: 20px;
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 15px;
+        padding: 12px;
+        background: #2a2a2a;
+        border-radius: 10px;
+        border: 1px solid #444;
+        transition: all 0.3s ease;
+    }
+
+    .tip-item:hover {
+        border-color: #b73613;
+        transform: translateX(5px);
+    }
+
+    .tip-icon {
+        color: #b73613;
+        font-size: 1.2rem;
+        margin-top: 2px;
+    }
+
+    .tip-content {
+        flex: 1;
+    }
+
+    .tip-title {
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .tip-text {
+        color: #bbb;
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .editor-toolbar {
+        background: #1c1c1c !important;
+        border: 1px solid #444 !important;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 10px !important;
+    }
+
+    .editor-toolbar button {
+        color: #fff !important;
+        border: 1px solid #444 !important;
+        background: #2a2a2a !important;
+        border-radius: 6px !important;
+    }
+
+    .editor-toolbar button:hover {
+        background: #b73613 !important;
+        border-color: #b73613 !important;
+    }
+
+    .CodeMirror {
+        background: #1c1c1c !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+        border-top: none !important;
+        border-radius: 0 0 12px 12px !important;
+        font-size: 1rem !important;
+    }
+
+    .CodeMirror-cursor {
+        border-left: 1px solid #b73613 !important;
+    }
+
+    @media (max-width: 768px) {
+        .create-card {
+            padding: 25px;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .stats-bar {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="blog-create-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="create-card fade-in">
+                    <div class="page-header">
+                        <p class="page-subtitle">Share your knowledge and experience with the community</p>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data" id="blogForm">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-type" style="color: #b73613;"></i>
+                                Blog Title
+                            </label>
+                            <input type="text" name="title" required 
+                                   class="form-control form-control-custom" 
+                                   placeholder="Enter an engaging title for your blog...">
+                        </div>
+
+                        <!-- Excerpt -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-text-paragraph" style="color: #b73613;"></i>
+                                Excerpt (Optional)
+                            </label>
+                            <textarea name="excerpt" rows="3" 
+                                      class="form-control form-control-custom" 
+                                      placeholder="Write a brief summary that will appear in blog previews..."></textarea>
+                        </div>
+                        <!-- Content -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-pencil" style="color: #b73613;"></i>
+                                Blog Content
+                            </label>
+                            <textarea id="content" name="content" rows="12"></textarea>
+
+                            <!-- Writing Stats -->
+                            <div class="stats-bar">
+                                <div class="stat-item">
+                                    <div class="stat-number" id="wordCount">0</div>
+                                    <div class="stat-label">Words</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number" id="charCount">0</div>
+                                    <div class="stat-label">Characters</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number" id="readTime">0</div>
+                                    <div class="stat-label">Minutes Read</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number" id="paragraphCount">0</div>
+                                    <div class="stat-label">Paragraphs</div>
+                                </div>
+                            </div>
+
+                            <!-- Emoji Section -->
+                            <div class="emoji-section">
+                                <label class="form-label">
+                                    <i class="bi bi-emoji-smile" style="color: #b73613;"></i>
+                                    Add Emojis
+                                </label>
+                                <div class="emoji-grid">
+                                    <button type="button" class="emoji-btn">😊</button>
+                                    <button type="button" class="emoji-btn">❤️</button>
+                                    <button type="button" class="emoji-btn">🔥</button>
+                                    <button type="button" class="emoji-btn">💡</button>
+                                    <button type="button" class="emoji-btn">🚀</button>
+                                    <button type="button" class="emoji-btn">🌟</button>
+                                    <button type="button" class="emoji-btn">📚</button>
+                                    <button type="button" class="emoji-btn">💪</button>
+                                    <button type="button" class="emoji-btn">🎯</button>
+                                    <button type="button" class="emoji-btn">✨</button>
+                                    <button type="button" class="emoji-btn">👍</button>
+                                    <button type="button" class="emoji-btn">💯</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Featured Image -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-image" style="color: #b73613;"></i>
+                                Featured Image
+                            </label>
+                            <input type="file" name="image" accept="image/*" 
+                                   class="form-control form-control-custom" 
+                                   id="imageInput">
+                            <div class="image-preview">
+                                <img id="imagePreview" class="preview-image" alt="Image preview">
+                            </div>
+                        </div>
+
+                        <!-- Writing Tips -->
+                        <div class="writing-tips">
+                            <label class="form-label">
+                                <i class="bi bi-lightbulb" style="color: #b73613;"></i>
+                                Writing Tips
+                            </label>
+                            <div class="tip-item">
+                                <i class="bi bi-check-circle tip-icon"></i>
+                                <div class="tip-content">
+                                    <div class="tip-title">Engaging Title</div>
+                                    <div class="tip-text">Create a compelling title that grabs attention and clearly states your topic.</div>
+                                </div>
+                            </div>
+                            <div class="tip-item">
+                                <i class="bi bi-check-circle tip-icon"></i>
+                                <div class="tip-content">
+                                    <div class="tip-title">Clear Structure</div>
+                                    <div class="tip-text">Use headings, bullet points, and paragraphs to make your content easy to read.</div>
+                                </div>
+                            </div>
+                            <div class="tip-item">
+                                <i class="bi bi-check-circle tip-icon"></i>
+                                <div class="tip-content">
+                                    <div class="tip-title">Add Value</div>
+                                    <div class="tip-text">Share personal experiences and practical advice that readers can apply.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button type="submit" name="publish" class="action-btn btn-publish">
+                                <i class="bi bi-rocket-takeoff"></i>
+                                Publish Blog
+                            </button>
+
+                            <a href="{% url 'mentor_dashboardprofile' %}" class="action-btn btn-cancel">
+                                <i class="bi bi-x-circle"></i>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    const simplemde = new SimpleMDE({
+        element: document.getElementById("content"),
+        placeholder: "Start writing your amazing blog content here...\n\nYou can use markdown formatting:\n# Headers\n**Bold text**\n*Italic text*\n- Bullet points\n1. Numbered lists\n\nShare your wisdom with the community!",
+        spellChecker: true,
+        autosave: {
+            enabled: true,
+            unique_id: "blog_content_{{ request.user.id }}",
+            delay: 1000
+        },
+        status: false, 
+    });
+    function updateWritingStats() {
+        const text = simplemde.value();
+        const words = text.trim().split(/\s+/).filter(Boolean).length;
+        const characters = text.length;
+        const paragraphs = text.split('\n').filter(line => line.trim().length > 0).length;
+        const readTime = Math.ceil(words / 200);
+
+        document.getElementById('wordCount').textContent = words;
+        document.getElementById('charCount').textContent = characters;
+        document.getElementById('readTime').textContent = readTime;
+        document.getElementById('paragraphCount').textContent = paragraphs;
+    }
+
+    simplemde.codemirror.on('change', updateWritingStats);
+    document.querySelectorAll('.emoji-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const emoji = btn.textContent;
+            const cm = simplemde.codemirror;
+            cm.replaceSelection(emoji + ' ');
+            cm.focus();
+        });
+    });
+
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+
+    document.getElementById('blogForm').addEventListener('submit', function(e) {
+        const title = document.querySelector('input[name="title"]').value.trim();
+        const content = simplemde.value().trim();
+        
+        if (!title) {
+            e.preventDefault();
+            alert('Please enter a blog title');
+            return;
+        }
+        
+        if (!content) {
+            e.preventDefault();
+            alert('Please write some content for your blog');
+            return;
+        }
+        
+        const submitBtn = e.submitter;
+        if (submitBtn.name === 'publish') {
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Publishing...';
+        } else {
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
+        }
+        submitBtn.disabled = true;
+    });
+
+    let isSaving = false;
+    simplemde.codemirror.on('change', function() {
+        if (!isSaving) {
+            isSaving = true;
+            setTimeout(() => {
+                isSaving = false;
+            }, 1000);
+        }
+    });
+    document.addEventListener('DOMContentLoaded', updateWritingStats);
+</script>
+{% endblock %}

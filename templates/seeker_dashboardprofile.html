@@ -1,0 +1,701 @@
+{% extends "Sbase.html" %}
+{% load static %}
+
+{% block title %}{{ seeker.name }}'s Profile | Retiree Connect{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  .profile-section {
+    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .profile-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #b73613, transparent);
+  }
+
+  .profile-header {
+    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+    border-radius: 20px;
+    padding: 40px;
+    border: 1px solid #333;
+    box-shadow: 0 8px 32px rgba(183, 54, 19, 0.1);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #b73613, transparent);
+    transition: left 0.6s ease;
+  }
+
+  .profile-header:hover::before {
+    left: 100%;
+  }
+
+  .profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #333;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .profile-header:hover .profile-avatar {
+    border-color: #b73613;
+    transform: scale(1.05);
+  }
+
+  .profile-name {
+    color: #fff;
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .profile-goals {
+    color: #bbb;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    max-width: 600px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+  }
+
+  .stat-card {
+    background: linear-gradient(145deg, #1a1a1a 0%, #222 100%);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #333;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(183, 54, 19, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .stat-card:hover::before {
+    left: 100%;
+  }
+
+  .stat-card:hover {
+    border-color: #b73613;
+    transform: translateY(-5px);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #b73613;
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-label {
+    color: #bbb;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+  }
+
+  .action-btn {
+    background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .action-btn:hover {
+    background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+    border-color: #b73613;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(183, 54, 19, 0.3);
+    color: #fff;
+  }
+
+  .mentors-section {
+    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid #333;
+    box-shadow: 0 8px 32px rgba(183, 54, 19, 0.1);
+    margin-bottom: 30px;
+  }
+
+  .section-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title i {
+    color: #b73613;
+  }
+
+  .mentors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .mentor-card {
+    background: linear-gradient(145deg, #1a1a1a 0%, #222 100%);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mentor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #b73613, transparent);
+    transition: left 0.6s ease;
+  }
+
+  .mentor-card:hover::before {
+    left: 100%;
+  }
+
+  .mentor-card:hover {
+    transform: translateY(-5px);
+    border-color: #444;
+    box-shadow: 0 10px 30px rgba(183, 54, 19, 0.15);
+  }
+
+  .mentor-name {
+    color: #b73613;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .mentor-bio {
+    color: #ccc;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .mentor-field {
+    color: #888;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+    color: #444;
+  }
+
+  .empty-state h5 {
+    color: #bbb;
+    margin-bottom: 10px;
+  }
+
+  .empty-state p {
+    color: #888;
+    margin-bottom: 20px;
+  }
+
+  .btn-explore {
+    background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-explore:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(183, 54, 19, 0.4);
+    color: #fff;
+  }
+
+  .btn-outline-primary {
+    border: 1px solid #b73613;
+    color: #b73613;
+    background: transparent;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-primary:hover {
+    background: #b73613;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .modal-content {
+    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+    border: 1px solid #333;
+    border-radius: 16px;
+    color: #fff;
+  }
+
+  .modal-header {
+    border-bottom: 1px solid #333;
+    padding: 25px;
+  }
+
+  .modal-title {
+    color: #b73613;
+    font-weight: 700;
+  }
+
+  .modal-body {
+    padding: 25px;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #333;
+    padding: 20px 25px;
+  }
+
+  .btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
+
+  .form-control, .form-select {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus, .form-select:focus {
+    background: #2a2a2a;
+    border-color: #b73613;
+    box-shadow: 0 0 0 3px rgba(183, 54, 19, 0.2);
+    color: #fff;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #b73613 0%, #d44d29 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(183, 54, 19, 0.4);
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .profile-content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .profile-content {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .mentors-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+      justify-content: center;
+    }
+    
+    .profile-header {
+      padding: 25px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="profile-section py-5">
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header fade-in">
+      <div class="profile-content">
+        <!-- Avatar Section -->
+        <div class="avatar-section">
+          {% if seeker.photo %}
+          <img src="{{ seeker.photo.url }}" alt="{{ seeker.name }}" class="profile-avatar">
+          {% else %}
+          <div class="profile-avatar d-flex align-items-center justify-content-center bg-dark">
+            <i class="bi bi-person-fill" style="font-size: 3rem; color: #666;"></i>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+          <h1 class="profile-name">{{ seeker.name }}</h1>
+          <p class="profile-goals">
+            {% if seeker.goals %}
+              {{ seeker.goals }}
+            {% else %}
+              No goals added yet. Click "Edit Goals" to add your career or learning objectives.
+            {% endif %}
+          </p>
+
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-number">{{ total_requests }}</span>
+              <span class="stat-label">Total Requests</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">{{ accepted_requests }}</span>
+              <span class="stat-label">Accepted</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">{{ pending_requests }}</span>
+              <span class="stat-label">Pending</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">{{ followbacks }}</span>
+              <span class="stat-label">Follow-backs</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="action-btn" data-bs-toggle="modal" data-bs-target="#editGoalsModal">
+              <i class="bi bi-bullseye"></i>
+              Edit Goals
+            </button>
+            <button class="action-btn" data-bs-toggle="modal" data-bs-target="#editInterestsModal">
+              <i class="bi bi-heart"></i>
+              Edit Interests
+            </button>
+            <button class="action-btn" data-bs-toggle="modal" data-bs-target="#changePhotoModal">
+              <i class="bi bi-camera"></i>
+              Change Picture
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Current Mentors Section -->
+    <div class="mentors-section fade-in" style="animation-delay: 0.2s;">
+      <h3 class="section-title">
+        <i class="bi bi-people-fill"></i>
+        My Current Mentors
+      </h3>
+
+      {% if current_mentors %}
+      <div class="mentors-grid">
+        {% for mentor in current_mentors %}
+        <div class="mentor-card fade-in" style="animation-delay: {{ forloop.counter0|add:0.3 }}s;">
+          <h4 class="mentor-name">{{ mentor.mentor.fname }}</h4>
+          <p class="mentor-bio">
+            {{ mentor.mentor.bio|default:"No bio available. This mentor hasn't added a bio yet." }}
+          </p>
+          <div class="mentor-field">
+            <i class="bi bi-briefcase"></i>
+            {{ mentor.mentor.field|default:"Not specified" }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="bi bi-people"></i>
+        <h5>No Mentors Yet</h5>
+        <p>You haven't connected with any mentors yet. Start exploring to find the perfect mentor for your journey.</p>
+        <a href="{% url 'mentors_browsing' %}" class="btn-explore">
+          <i class="bi bi-compass"></i>
+          Explore Mentors
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Saved Blogs Section -->
+    <div class="mentors-section fade-in" style="animation-delay: 0.4s;">
+      <h3 class="section-title">
+        <i class="bi bi-bookmark-fill"></i>
+        My Saved Blogs
+        {% if saved_blogs_count > 0 %}
+        <span class="badge bg-primary ms-2">{{ saved_blogs_count }}</span>
+        {% endif %}
+      </h3>
+
+      {% if saved_blogs %}
+      <div class="mentors-grid">
+        {% for saved_blog in saved_blogs %}
+        <div class="mentor-card fade-in" style="animation-delay: {{ forloop.counter0|add:0.5 }}s;">
+          <h4 class="mentor-name">{{ saved_blog.blog.title }}</h4>
+          <p class="mentor-bio">
+            {{ saved_blog.blog.excerpt|default:saved_blog.blog.content|truncatewords:20 }}
+          </p>
+          <div class="mentor-field">
+            <i class="bi bi-person"></i>
+            By {{ saved_blog.blog.author.fname }}
+          </div>
+          <div class="mentor-field">
+            <i class="bi bi-calendar"></i>
+            Saved on {{ saved_blog.saved_at|date:"M d, Y" }}
+          </div>
+          <div class="mt-3">
+            <a href="{% url 'view_blog' saved_blog.blog.slug %}" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-eye"></i> Read Blog
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      
+      {% if saved_blogs_count > 5 %}
+      <div class="text-center mt-4">
+        <a href="{% url 'seeker_blog_feed' %}?saved=true" class="btn-explore">
+          <i class="bi bi-bookmarks"></i>
+          View All Saved Blogs
+        </a>
+      </div>
+      {% endif %}
+      
+      {% else %}
+      <div class="empty-state">
+        <i class="bi bi-bookmark"></i>
+        <h5>No Saved Blogs Yet</h5>
+        <p>You haven't saved any blogs yet. Start exploring blogs and save your favorites for later reading.</p>
+        <a href="{% url 'seeker_blog_feed' %}" class="btn-explore">
+          <i class="bi bi-newspaper"></i>
+          Explore Blogs
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Edit Goals Modal -->
+<div class="modal fade" id="editGoalsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-bullseye me-2"></i>
+          Edit Your Goals
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{% url 'edit_seeker_goals' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">What are your career or learning goals?</label>
+            <textarea name="goals" class="form-control" rows="6" placeholder="Describe your objectives, aspirations, and what you hope to achieve through mentorship...">{{ seeker.goals }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Interests Modal -->
+<div class="modal fade" id="editInterestsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-heart me-2"></i>
+          Edit Your Interests
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{% url 'edit_seeker_interests' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">What are your professional interests?</label>
+            <textarea name="interests" class="form-control" rows="6" placeholder="List your areas of interest, skills you want to develop, or topics you're passionate about...">{{ seeker.interests }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Change Profile Picture Modal -->
+<div class="modal fade" id="changePhotoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-camera me-2"></i>
+          Change Profile Picture
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{% url 'change_seeker_photo' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Upload New Photo</label>
+            <input type="file" name="photo" class="form-control" accept="image/*" required>
+            <div class="form-text text-muted">
+              Recommended: Square image, at least 400x400 pixels, max 5MB.
+            </div>
+          </div>
+          {% if seeker.photo %}
+          <div class="alert alert-dark border-secondary">
+            <i class="bi bi-info-circle me-2"></i>
+            Uploading a new photo will replace your current profile picture.
+          </div>
+          {% endif %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Upload Photo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const profileCards = document.querySelectorAll('.profile-header, .mentor-card, .stat-card');
+    
+    profileCards.forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = this.style.transform || '';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+    });
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+</script>
+{% endblock %}

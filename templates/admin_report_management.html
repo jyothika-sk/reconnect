@@ -1,0 +1,495 @@
+{% extends "Abase.html" %}
+{% load static %}
+
+{% block title %}Report Management | Admin Dashboard{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    .reports-section {
+        background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+        min-height: 100vh;
+        padding: 20px 0;
+    }
+
+    .stats-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(183, 54, 19, 0.2);
+    }
+
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stats-label {
+        color: #bbb;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .report-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .report-card:hover {
+        border-color: #444;
+        transform: translateY(-2px);
+    }
+
+    .report-urgent {
+        border-left: 4px solid #dc3545;
+    }
+
+    .report-medium {
+        border-left: 4px solid #ffc107;
+    }
+
+    .report-low {
+        border-left: 4px solid #0dcaf0;
+    }
+
+    .report-header {
+        display: flex;
+        justify-content: between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .report-title {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .report-meta {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .report-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .badge-urgent {
+        background: #dc3545;
+        color: #fff;
+    }
+
+    .badge-medium {
+        background: #ffc107;
+        color: #000;
+    }
+
+    .badge-low {
+        background: #0dcaf0;
+        color: #000;
+    }
+
+    .badge-pending {
+        background: #6c757d;
+        color: #fff;
+    }
+
+    .badge-in_review {
+        background: #fd7e14;
+        color: #fff;
+    }
+
+    .badge-resolved {
+        background: #198754;
+        color: #fff;
+    }
+
+    .badge-rejected {
+        background: #dc3545;
+        color: #fff;
+    }
+
+    .reporter-info {
+        color: #bbb;
+        font-size: 0.9rem;
+    }
+
+    .report-description {
+        color: #ccc;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .report-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-admin {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-resolve {
+        background: #198754;
+        color: #fff;
+    }
+
+    .btn-resolve:hover {
+        background: #157347;
+    }
+
+    .btn-review {
+        background: #fd7e14;
+        color: #fff;
+    }
+
+    .btn-review:hover {
+        background: #dc6502;
+    }
+
+    .btn-reject {
+        background: #dc3545;
+        color: #fff;
+    }
+
+    .btn-reject:hover {
+        background: #bb2d3b;
+    }
+
+    .btn-delete {
+        background: #6c757d;
+        color: #fff;
+    }
+
+    .btn-delete:hover {
+        background: #5c636a;
+    }
+
+    .filters-section {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333;
+        margin-bottom: 20px;
+    }
+
+    .filter-group {
+        margin-bottom: 15px;
+    }
+
+    .filter-label {
+        color: #fff;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .form-control-dark {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: #fff;
+    }
+
+    .form-control-dark:focus {
+        background: #1a1a1a;
+        border-color: #b73613;
+        color: #fff;
+        box-shadow: 0 0 0 0.2rem rgba(183, 54, 19, 0.25);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+        color: #444;
+    }
+
+    .pagination-dark .page-link {
+        background: #1c1c1c;
+        color: #fff;
+        border: 1px solid #444;
+    }
+
+    .pagination-dark .page-item.active .page-link {
+        background: #b73613;
+        border-color: #b73613;
+    }
+
+    .modal-content {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+        border: 1px solid #444;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #444;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #444;
+    }
+
+    .admin-notes {
+        background: rgba(255, 193, 7, 0.1);
+        border-left: 3px solid #ffc107;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="reports-section">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="text-white mb-2">Report Management</h1>
+                        <p class="text-muted mb-0">Review reports submitted by users</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-muted small">
+                            Total Reports: <strong class="text-white">{{ total_reports }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number text-info">{{ total_reports }}</div>
+                    <div class="stats-label">Total Reports</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Urgency Stats -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number text-danger">{{ high_urgency }}</div>
+                    <div class="stats-label">High Urgency</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number text-warning">{{ medium_urgency }}</div>
+                    <div class="stats-label">Medium Urgency</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number text-info">{{ low_urgency }}</div>
+                    <div class="stats-label">Low Urgency</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Report Type</label>
+                        <select name="type" class="form-control form-control-dark">
+                            <option value="">All Types</option>
+                            {% for type_value, type_label in report_types %}
+                                <option value="{{ type_value }}" {% if type_filter == type_value %}selected{% endif %}>
+                                    {{ type_label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Urgency</label>
+                        <select name="urgency" class="form-control form-control-dark">
+                            <option value="">All Urgency</option>
+                            {% for urgency_value, urgency_label in urgency_levels %}
+                                <option value="{{ urgency_value }}" {% if urgency_filter == urgency_value %}selected{% endif %}>
+                                    {{ urgency_label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Search</label>
+                        <input type="text" name="search" class="form-control form-control-dark" 
+                               placeholder="Search reports..." value="{{ search_query }}">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Apply Filters
+                        </button>
+                        <a href="{% url 'admin_report_management' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Reports List -->
+        {% if reports %}
+            {% for report in reports %}
+            <div class="report-card report-{{ report.urgency }}">
+                <div class="report-header">
+                    <div class="flex-grow-1">
+                        <h3 class="report-title">{{ report.title }}</h3>
+                        <div class="report-meta">
+                            <span class="report-badge badge-{{ report.urgency }}">
+                                <i class="bi bi-flag"></i> {{ report.get_urgency_display }}
+                            </span>
+                            <span class="report-badge badge-{{ report.status }}">
+                                {{ report.get_status_display }}
+                            </span>
+                            <span class="report-badge" style="background: #6f42c1; color: #fff;">
+                                {{ report.get_report_type_display }}
+                            </span>
+                        </div>
+                        <div class="reporter-info">
+                            <i class="bi bi-person"></i>
+                            {% if report.get_reporter %}
+                                {{ report.get_reporter_type|title }}: 
+                                {% if report.get_reporter_type == 'retiree' %}
+                                    {{ report.get_reporter.fname }} ({{ report.get_reporter.email }})
+                                {% else %}
+                                    {{ report.get_reporter.name }} ({{ report.get_reporter.email }})
+                                {% endif %}
+                            {% else %}
+                                Anonymous User
+                            {% endif %}
+                            • <i class="bi bi-clock"></i> {{ report.created_at|timesince }} ago
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-description">
+                    {{ report.description }}
+                </div>
+
+                {% if report.admin_notes %}
+                <div class="admin-notes mb-3">
+                    <strong class="text-warning">Admin Notes:</strong>
+                    <p class="text-light mb-0">{{ report.admin_notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Reports pagination">
+                <ul class="pagination pagination-dark justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if urgency_filter %}&urgency={{ urgency_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if urgency_filter %}&urgency={{ urgency_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if urgency_filter %}&urgency={{ urgency_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <i class="bi bi-flag"></i>
+                <h4 class="text-white">No Reports Found</h4>
+                <p class="text-muted">
+                    {% if status_filter or type_filter or urgency_filter or search_query %}
+                        No reports match your current filters. Try adjusting your search criteria.
+                    {% else %}
+                        There are no reports to display at the moment.
+                    {% endif %}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Messages Display -->
+{% if messages %}
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+</script>
+{% endblock %}

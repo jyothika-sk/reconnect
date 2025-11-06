@@ -1,0 +1,815 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mentorship Requests | Retiree Connect{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    /* Reset template styles that conflict */
+    .mentorship-section {
+        background: linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 50%, #111 100%) !important;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .mentorship-section * {
+        color: inherit !important;
+    }
+
+    .mentorship-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+    }
+
+    .page-header {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid #333 !important;
+        box-shadow: 0 8px 32px rgba(183, 54, 19, 0.1);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #b73613, #ff6b6b, #ffa500, #b73613);
+        background-size: 200% 100%;
+        animation: shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    .page-title {
+        color: #fff !important;
+        font-weight: 800 !important;
+        font-size: 2.5rem !important;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .page-subtitle {
+        color: #bbb !important;
+        font-size: 1.1rem !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333 !important;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+        transition: left 0.6s ease;
+    }
+
+    .stat-card:hover::before {
+        left: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #b73613 !important;
+        box-shadow: 0 10px 30px rgba(183, 54, 19, 0.15);
+    }
+
+    .stat-number {
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 5px;
+        color: transparent !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .stat-label {
+        color: #ccc !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .request-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border-radius: 15px;
+        padding: 25px;
+        border: 1px solid #333 !important;
+        margin-bottom: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .request-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+        transition: left 0.6s ease;
+    }
+
+    .request-card:hover::before {
+        left: 100%;
+    }
+
+    .request-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(183, 54, 19, 0.2);
+        border-color: #444 !important;
+    }
+
+    .learner-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 2px solid #333;
+        transition: all 0.3s ease;
+    }
+
+    .avatar-placeholder {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        border: 2px solid #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #fff !important;
+        transition: all 0.3s ease;
+    }
+
+    .request-card:hover .learner-avatar,
+    .request-card:hover .avatar-placeholder {
+        border-color: #b73613;
+        transform: scale(1.05);
+    }
+
+    .topic-badge {
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%);
+        color: #fff !important;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        display: inline-block;
+        margin-bottom: 10px;
+        border: none !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        border: none !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%) !important;
+        color: #111 !important;
+    }
+
+    .status-accepted {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+        color: #fff !important;
+    }
+
+    .status-declined {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+        color: #fff !important;
+    }
+
+    .action-btn {
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        text-decoration: none !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .btn-accept {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+        color: #fff !important;
+    }
+
+    .btn-accept:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        color: #fff !important;
+    }
+
+    .btn-decline {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+        color: #fff !important;
+    }
+
+    .btn-decline:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        color: #fff !important;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #1e90ff 0%, #0066cc 100%) !important;
+        color: #fff !important;
+    }
+
+    .btn-view:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(30, 144, 255, 0.4);
+        color: #fff !important;
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%) !important;
+        color: #fff !important;
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
+        color: #fff !important;
+    }
+
+    .message-preview {
+        color: #ccc !important;
+        line-height: 1.5 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-family: "Hind", serif !important;
+        margin-bottom: 10px !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666 !important;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+        color: #444 !important;
+    }
+
+    .empty-state h4 {
+        color: #bbb !important;
+        margin-bottom: 15px;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .empty-state p {
+        color: #888 !important;
+        margin-bottom: 25px;
+        font-family: "Hind", serif !important;
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        background: #2a2a2a !important;
+        border: 1px solid #444 !important;
+        color: #ccc !important;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .filter-btn.active {
+        background: linear-gradient(135deg, #b73613 0%, #d44d29 100%) !important;
+        color: #fff !important;
+        border-color: #b73613 !important;
+    }
+
+    .filter-btn:hover:not(.active) {
+        background: #333 !important;
+        border-color: #b73613 !important;
+        color: #fff !important;
+    }
+
+    /* Text styling fixes */
+    .request-card h6 {
+        color: #fff !important;
+        font-family: "Poppins", sans-serif !important;
+        font-weight: 600 !important;
+        margin-bottom: 5px !important;
+    }
+
+    .request-card small.text-muted {
+        color: #888 !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .request-card .text-muted {
+        color: #888 !important;
+    }
+
+    .request-card .text-light {
+        color: #fff !important;
+    }
+
+    /* Modal styles */
+    .modal-content {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border: 1px solid #333 !important;
+        border-radius: 15px !important;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #333 !important;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #333 !important;
+    }
+
+    .modal-title {
+        color: #fff !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .btn-close-white {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    .btn-secondary {
+        background: #666 !important;
+        border-color: #666 !important;
+        color: #fff !important;
+    }
+
+    .status-update-form {
+        background: #1a1a1a;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        border: 1px solid #333;
+    }
+
+    .status-options {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem !important;
+        }
+        
+        .page-header {
+            padding: 20px;
+        }
+        
+        .request-card {
+            padding: 20px;
+        }
+        
+        .stats-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .filter-buttons {
+            justify-content: center;
+        }
+        
+        .action-buttons {
+            text-align: left !important;
+            margin-top: 15px;
+        }
+        
+        .action-buttons .action-btn {
+            margin-bottom: 10px;
+            margin-right: 10px;
+        }
+
+        .status-options {
+            flex-direction: column;
+        }
+    }
+
+    /* Additional responsive fixes */
+    @media (max-width: 576px) {
+        .request-card .row > div {
+            margin-bottom: 15px;
+        }
+        
+        .request-card .text-end {
+            text-align: left !important;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="mentorship-section py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header fade-in">
+            <!-- <h1 class="page-title">Mentorship Requests</h1> -->
+            <p class="page-subtitle">Manage and respond to mentorship requests from learners</p>
+            
+            <!-- Quick Stats -->
+            <div class="stats-cards">
+                <div class="stat-card fade-in" style="animation-delay: 0.1s;">
+                    <div class="stat-number">{{ total_requests|default:"0" }}</div>
+                    <div class="stat-label">Total Requests</div>
+                </div>
+                <div class="stat-card fade-in" style="animation-delay: 0.2s;">
+                    <div class="stat-number">{{ total_pending|default:"0" }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card fade-in" style="animation-delay: 0.3s;">
+                    <div class="stat-number">{{ total_accepted|default:"0" }}</div>
+                    <div class="stat-label">Accepted</div>
+                </div>
+                <div class="stat-card fade-in" style="animation-delay: 0.4s;">
+                    <div class="stat-number">{{ total_declined|default:"0" }}</div>
+                    <div class="stat-label">Declined</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="filter-buttons fade-in" style="animation-delay: 0.5s;">
+            <button class="filter-btn active" onclick="filterRequests('all')">All Requests</button>
+            <button class="filter-btn" onclick="filterRequests('pending')">Pending</button>
+            <button class="filter-btn" onclick="filterRequests('accepted')">Accepted</button>
+            <button class="filter-btn" onclick="filterRequests('declined')">Declined</button>
+        </div>
+
+        {% if requests %}
+            <!-- Requests Grid -->
+            <div class="requests-grid">
+                {% for req in requests %}
+                <div class="request-card fade-in" style="animation-delay: {{ forloop.counter0|add:0.1 }}s;" 
+                     data-status="{{ req.status|lower }}" data-request-id="{{ req.id }}">
+                    <div class="row align-items-start">
+                        <!-- Learner Info -->
+                        <div class="col-md-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                {% if req.learner.photo %}
+                                    <img src="{{ req.learner.photo.url }}" 
+                                         alt="{{ req.learner.name }}" class="learner-avatar me-3">
+                                {% else %}
+                                    <div class="avatar-placeholder me-3" style="background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%);">
+                                        {{ req.learner.name|first|upper }}
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <h6 class="text-light mb-1">{{ req.learner.name }}</h6>
+                                    <small class="text-muted">{{ req.learner.email }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Request Details -->
+                        <div class="col-md-6 mb-3">
+                            <span class="topic-badge">{{ req.topic }}</span>
+                            <div class="message-preview mb-2">
+                                {% if req.message %}
+                                    {{ req.message }}
+                                {% else %}
+                                    <span class="text-muted">No additional message provided</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-clock me-1"></i>
+                                {{ req.request_date|date:"M d, Y · H:i" }}
+                            </small>
+                        </div>
+
+                        <!-- Status & Actions -->
+                        <div class="col-md-3 text-end">
+                            <div class="mb-3">
+                                {% if req.status == 'Pending' %}
+                                    <span class="status-badge status-pending">
+                                        <i class="bi bi-clock me-1"></i>{{ req.status }}
+                                    </span>
+                                {% elif req.status == 'Accepted' %}
+                                    <span class="status-badge status-accepted">
+                                        <i class="bi bi-check-circle me-1"></i>{{ req.status }}
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-declined">
+                                        <i class="bi bi-x-circle me-1"></i>{{ req.status }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="action-buttons">
+                                {% if req.status == 'Pending' %}
+                                    <form method="POST" action="{% url 'respond_mentorship_request' req.id 'accept' %}" class="d-inline-block me-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn btn-accept">
+                                            <i class="bi bi-check-lg"></i>Accept
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{% url 'respond_mentorship_request' req.id 'decline' %}" class="d-inline-block">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn btn-decline">
+                                            <i class="bi bi-x-lg"></i>Decline
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <button class="action-btn btn-view" onclick="viewRequestDetails({{ req.id }})">
+                                        <i class="bi bi-eye"></i>View Details
+                                    </button>
+                                    {% if req.status == 'Declined' %}
+                                    <form method="POST" action="{% url 'respond_mentorship_request' req.id 'accept' %}" class="d-inline-block mt-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn btn-update">
+                                            <i class="bi bi-arrow-clockwise"></i>Accept
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state fade-in">
+                <i class="bi bi-inbox"></i>
+                <h4>No Mentorship Requests</h4>
+                <p>You don't have any mentorship requests at the moment.</p>
+                <p class="text-muted">Your mentorship profile will be visible to seekers looking for guidance.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+<div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-light">Request Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="requestDetailsContent">
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterRequests(status) {
+        const cards = document.querySelectorAll('.request-card');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        
+        filterBtns.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        cards.forEach(card => {
+            if (status === 'all' || card.dataset.status === status) {
+                card.style.display = 'block';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 50);
+            } else {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.display = 'none';
+                }, 300);
+            }
+        });
+    }
+
+    function viewRequestDetails(requestId) {
+        const requestCard = document.querySelector(`.request-card[data-request-id="${requestId}"]`);
+        if (!requestCard) {
+            console.error('Request card not found for ID:', requestId);
+            return;
+        }
+        const name = requestCard.querySelector('h6').textContent;
+        const email = requestCard.querySelector('small').textContent;
+
+        const avatarContainer = requestCard.querySelector('.d-flex.align-items-center');
+        let avatarHtml = '';
+        
+        if (avatarContainer.querySelector('img')) {
+            const photoSrc = avatarContainer.querySelector('img').src;
+            avatarHtml = `<img src="${photoSrc}" alt="${name}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #b73613;">`;
+        } else {
+            const placeholder = avatarContainer.querySelector('.avatar-placeholder');
+            const bgColor = placeholder ? placeholder.style.background : 'linear-gradient(135deg, #b73613 0%, #ff6b6b 100%)';
+            const initial = name.charAt(0).toUpperCase();
+            avatarHtml = `<div class="rounded-circle mb-3 d-flex align-items-center justify-content-center mx-auto" style="width: 100px; height: 100px; border: 3px solid #b73613; background: ${bgColor}; font-size: 2rem; font-weight: bold; color: #fff;">${initial}</div>`;
+        }
+        
+        const topic = requestCard.querySelector('.topic-badge').textContent;
+        const message = requestCard.querySelector('.message-preview').textContent.trim();
+        const date = requestCard.querySelector('small.text-muted').textContent.replace('·', 'at');
+        const status = requestCard.querySelector('.status-badge').textContent.trim();
+        const currentStatus = requestCard.dataset.status;
+        
+        const modalContent = `
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center mb-4">
+                        ${avatarHtml}
+                        <h5 class="text-light">${name}</h5>
+                        <p class="text-muted">${email}</p>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="text-muted small">TOPIC</label>
+                        <h6 class="text-warning">${topic}</h6>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">MESSAGE</label>
+                        <p class="text-light" style="white-space: pre-wrap;">${message}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">REQUESTED ON</label>
+                        <p class="text-light">${date}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">CURRENT STATUS</label>
+                        <div>
+                            ${status === 'Pending' ? 
+                                '<span class="status-badge status-pending"><i class="bi bi-clock me-1"></i>Pending</span>' : 
+                              status === 'Accepted' ? 
+                                '<span class="status-badge status-accepted"><i class="bi bi-check-circle me-1"></i>Accepted</span>' : 
+                                '<span class="status-badge status-declined"><i class="bi bi-x-circle me-1"></i>Declined</span>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <!-- Status Update Section -->
+                    <div class="status-update-form">
+                        <h6 class="text-light mb-3">Update Request Status</h6>
+                        <div class="status-options">
+                            ${currentStatus === 'declined' ? 
+                                `<form method="POST" action="/respond_mentorship_request/${requestId}/accept/" class="d-inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn btn-accept">
+                                        <i class="bi bi-check-lg"></i>Accept Request
+                                    </button>
+                                </form>` : 
+                                currentStatus === 'accepted' ?
+                                `<form method="POST" action="/respond_mentorship_request/${requestId}/decline/" class="d-inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn btn-decline">
+                                        <i class="bi bi-x-lg"></i>Decline Request
+                                    </button>
+                                </form>` :
+                                `<form method="POST" action="/respond_mentorship_request/${requestId}/accept/" class="d-inline-block me-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn btn-accept">
+                                        <i class="bi bi-check-lg"></i>Accept
+                                    </button>
+                                </form>
+                                <form method="POST" action="/respond_mentorship_request/${requestId}/decline/" class="d-inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn btn-decline">
+                                        <i class="bi bi-x-lg"></i>Decline
+                                    </button>
+                                </form>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('requestDetailsContent').innerHTML = modalContent;
+        const modal = new bootstrap.Modal(document.getElementById('requestDetailsModal'));
+        modal.show();
+    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const requestCards = document.querySelectorAll('.request-card');
+        
+        requestCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}

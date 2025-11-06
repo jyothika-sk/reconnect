@@ -1,0 +1,821 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Follow Requests | Retiree Connect{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    /* Reset template styles that conflict */
+    .follow-requests-section {
+        background: linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 50%, #111 100%) !important;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .follow-requests-section * {
+        color: inherit !important;
+    }
+
+    .follow-requests-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+    }
+
+    .page-header {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid #333 !important;
+        box-shadow: 0 8px 32px rgba(183, 54, 19, 0.1);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #b73613, #ff6b6b, #ffa500, #b73613);
+        background-size: 200% 100%;
+        animation: shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    .page-title {
+        color: #fff !important;
+        font-weight: 800 !important;
+        font-size: 2.5rem !important;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .page-subtitle {
+        color: #bbb !important;
+        font-size: 1.1rem !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333 !important;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+        transition: left 0.6s ease;
+    }
+
+    .stat-card:hover::before {
+        left: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #b73613 !important;
+        box-shadow: 0 10px 30px rgba(183, 54, 19, 0.15);
+    }
+
+    .stat-number {
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 5px;
+        color: transparent !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .stat-label {
+        color: #ccc !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .request-card {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border-radius: 15px;
+        padding: 25px;
+        border: 1px solid #333 !important;
+        margin-bottom: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .request-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #b73613, transparent);
+        transition: left 0.6s ease;
+    }
+
+    .request-card:hover::before {
+        left: 100%;
+    }
+
+    .request-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(183, 54, 19, 0.2);
+        border-color: #444 !important;
+    }
+
+    .seeker-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 2px solid #333 !important;
+        transition: all 0.3s ease;
+    }
+
+    .request-card:hover .seeker-avatar {
+        border-color: #b73613 !important;
+        transform: scale(1.05);
+    }
+
+    .blog-thumbnail {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid #444 !important;
+        transition: all 0.3s ease;
+    }
+
+    .blog-thumbnail:hover {
+        transform: scale(1.1);
+        border-color: #b73613 !important;
+        box-shadow: 0 4px 15px rgba(183, 54, 19, 0.3);
+    }
+
+    .action-btn {
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        text-decoration: none !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .btn-accept {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+        color: #fff !important;
+    }
+
+    .btn-accept:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        color: #fff !important;
+    }
+
+    .btn-reject {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+        color: #fff !important;
+    }
+
+    .btn-reject:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        color: #fff !important;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #1e90ff 0%, #0066cc 100%) !important;
+        color: #fff !important;
+    }
+
+    .btn-view:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(30, 144, 255, 0.4);
+        color: #fff !important;
+    }
+
+    .likes-count {
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%) !important;
+        color: #fff !important;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        border: none !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666 !important;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+        color: #444 !important;
+    }
+
+    .empty-state h4 {
+        color: #bbb !important;
+        margin-bottom: 15px;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .empty-state p {
+        color: #888 !important;
+        margin-bottom: 25px;
+        font-family: "Hind", serif !important;
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .time-badge {
+        background: #2a2a2a !important;
+        color: #bbb !important;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem !important;
+        border: 1px solid #444 !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .seeker-info-card {
+        background: linear-gradient(145deg, #1a1a1a 0%, #222 100%) !important;
+        border-radius: 12px;
+        padding: 15px;
+        padding-right: 15px;
+        border: 1px solid #333 !important;
+        transition: all 0.3s ease;
+    }
+
+    .seeker-info-card:hover {
+        border-color: #b73613 !important;
+        transform: translateY(-3px);
+    }
+
+    /* Text styling fixes */
+    .request-card h6 {
+        color: #fff !important;
+        font-family: "Poppins", sans-serif !important;
+        font-weight: 600 !important;
+        margin-bottom: 5px !important;
+    }
+
+    .request-card small.text-muted {
+        color: #888 !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .request-card .text-muted {
+        color: #888 !important;
+    }
+
+    .request-card .text-light {
+        color: #fff !important;
+    }
+
+    /* Profile Modal Styles */
+    .modal-content {
+        background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+        border: 1px solid #333 !important;
+        border-radius: 15px !important;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #333 !important;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #333 !important;
+    }
+
+    .modal-title {
+        color: #fff !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .btn-close-white {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    .btn-secondary {
+        background: #666 !important;
+        border-color: #666 !important;
+        color: #fff !important;
+    }
+
+    .profile-avatar-large {
+        width: 120px;
+        height: 120px;
+        border-radius: 20px;
+        object-fit: cover;
+        border: 4px solid #b73613 !important;
+        box-shadow: 0 8px 25px rgba(183, 54, 19, 0.3);
+    }
+
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .profile-stat-item {
+        text-align: center;
+        padding: 15px;
+        background: linear-gradient(145deg, #1a1a1a 0%, #222 100%) !important;
+        border-radius: 12px;
+        border: 1px solid #333 !important;
+    }
+
+    .profile-stat-number {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #b73613 !important;
+        margin-bottom: 5px;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .profile-stat-label {
+        color: #bbb !important;
+        font-size: 0.8rem !important;
+        font-weight: 500 !important;
+        font-family: "Hind", serif !important;
+    }
+
+    .interest-tag {
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%) !important;
+        color: #fff !important;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem !important;
+        font-weight: 500 !important;
+        display: inline-block;
+        margin: 2px;
+        border: none !important;
+        font-family: "Poppins", sans-serif !important;
+    }
+
+    .recent-activity-item {
+        background: #1a1a1a !important;
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #333 !important;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .recent-activity-item:hover {
+        border-color: #b73613 !important;
+        transform: translateX(5px);
+    }
+
+    .progress {
+        background: #333 !important;
+        height: 8px !important;
+    }
+
+    .progress-bar {
+        background: linear-gradient(135deg, #b73613 0%, #ff6b6b 100%) !important;
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem !important;
+        }
+        
+        .page-header {
+            padding: 20px;
+        }
+        
+        .request-card {
+            padding: 20px;
+        }
+        
+        .stats-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .action-buttons {
+            text-align: left !important;
+            margin-top: 15px;
+        }
+        
+        .action-buttons .action-btn {
+            margin-bottom: 10px;
+            margin-right: 10px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .request-card .row > div {
+            margin-bottom: 15px;
+        }
+        
+        .request-card .text-end {
+            text-align: left !important;
+        }
+        
+        .d-flex.flex-column.flex-md-row {
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .seeker-avatar {
+            width: 50px;
+            height: 50px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="follow-requests-section py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header fade-in">
+            <!-- <h1 class="page-title">Follow Requests</h1> -->
+            <p class="page-subtitle">Manage connection requests from seekers interested in your content</p>
+            
+            <!-- Quick Stats -->
+            <div class="stats-cards">
+                <div class="stat-card fade-in" style="animation-delay: 0.1s;">
+                    <div class="stat-number">{{ requests|length }}</div>
+                    <div class="stat-label">Total Requests</div>
+                </div>
+                <div class="stat-card fade-in" style="animation-delay: 0.2s;">
+                    <div class="stat-number">{{ requests|length }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+        </div>
+
+        {% if requests %}
+            <!-- Requests List -->
+            <div class="requests-list">
+                {% for req in requests %}
+                <div class="request-card fade-in" style="animation-delay: {{ forloop.counter0|add:0.1 }}s;">
+                    <div class="row align-items-center">
+                        <!-- Seeker Info -->
+                        <div class="col-md-3 mb-3">
+                            <div class="seeker-info-card">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ req.seeker.photo.url|default:'/static/images/default_user.png' }}" 
+                                         alt="{{ req.seeker.name }}" class="seeker-avatar me-3">
+                                    <div>
+                                        <h6 class="text-light mb-1">{{ req.seeker.name }}</h6>
+                                        <small class="text-muted">{{ req.seeker.email }}</small>
+                                        <div class="mt-2">
+                                            <span class="time-badge">
+                                                <i class="bi bi-clock me-1"></i>
+                                                {{ req.created_at|timesince }} ago
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Likes Gallery -->
+                        <div class="col-md-5 mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <h6 class="text-light mb-0 me-3">Liked Your Content</h6>
+                                {% with liked_blogs=req.seeker.liked_blogs.all %}
+                                    {% if liked_blogs %}
+                                    <span class="likes-count">
+                                        <i class="bi bi-heart-fill me-1"></i>{{ liked_blogs|length }} posts
+                                    </span>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            
+                            {% with liked_blogs=req.seeker.liked_blogs.all %}
+                                {% if liked_blogs %}
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for blog in liked_blogs|slice:":6" %}
+                                    <a href="{% url 'retiree_blog_detail' blog.id %}" class="position-relative" title="{{ blog.title }}">
+                                        <img src="{{ blog.image.url|default:'/static/images/noimage.jpg' }}" 
+                                             alt="{{ blog.title }}" 
+                                             class="blog-thumbnail">
+                                        {% if forloop.last and liked_blogs|length > 6 %}
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 rounded-8 d-flex align-items-center justify-content-center">
+                                            <small class="text-light">+{{ liked_blogs|length|add:"-6" }}</small>
+                                        </div>
+                                        {% endif %}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-3">
+                                    <i class="bi bi-heart text-muted" style="font-size: 2rem;"></i>
+                                    <p class="text-muted mt-2 mb-0">No likes yet</p>
+                                </div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="col-md-4 text-end">
+                            <div class="d-flex flex-column flex-md-row gap-2 justify-content-end">
+                                <a href="{% url 'accept_request' req.id %}" class="action-btn btn-accept">
+                                    <i class="bi bi-check-lg"></i>Accept
+                                </a>
+                                <a href="{% url 'reject_request' req.id %}" class="action-btn btn-reject">
+                                    <i class="bi bi-x-lg"></i>Reject
+                                </a>
+                                <button class="action-btn btn-view" onclick="viewSeekerProfile(
+                                    '{{ req.seeker.name }}',
+                                    '{{ req.seeker.email }}',
+                                    '{{ req.seeker.photo.url|default:"/static/images/default_user.png" }}',
+                                    `{{ req.seeker.interests|default:"No interests specified" }}`,
+                                    {{ req.seeker.liked_blogs.count }},
+                                    {{ req.seeker.saved_blog_posts.count }},
+                                    `{{ req.created_at|date:"M d, Y" }}`
+                                )">
+                                    <i class="bi bi-eye"></i>View Profile
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    Requested: {{ req.created_at|date:"M d, Y · H:i" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state fade-in">
+                <i class="bi bi-people"></i>
+                <h4>No Follow Requests</h4>
+                <p>You don't have any pending follow requests at the moment.</p>
+                <p class="text-muted">As you publish more content, seekers interested in your expertise will send follow requests.</p>
+                <div class="mt-4">
+                    <a href="{% url 'add_blog' request.session.retireeid %}" class="action-btn btn-accept me-3">
+                        <i class="bi bi-pencil-square me-2"></i>Write a Blog
+                    </a>
+                    <a href="{% url 'retiree_blog_feed' %}" class="action-btn btn-view">
+                        <i class="bi bi-compass me-2"></i>Explore Content
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Seeker Profile Modal -->
+<div class="modal fade" id="seekerProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-light">
+                    <i class="bi bi-person-badge me-2" style="color: #b73613;"></i>
+                    Seeker Profile
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="seekerProfileContent">
+                <!-- Content will be loaded here via JavaScript -->
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn action-btn btn-accept" id="modalAcceptBtn">
+                    <i class="bi bi-check-lg me-1"></i>Accept Request
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewSeekerProfile(name, email, photo, interests, likedCount, savedCount, requestDate) {
+        // Parse interests string into array
+        const interestsArray = interests.split(',').map(interest => interest.trim()).filter(interest => interest);
+        
+        const modalContent = `
+            <div class="row">
+                <!-- Profile Header -->
+                <div class="col-md-4 text-center">
+                    <img src="${photo}" alt="${name}" class="profile-avatar-large mb-3">
+                    <h4 class="text-light mb-2">${name}</h4>
+                    <p class="text-muted">${email}</p>
+                    <div class="time-badge mb-3">
+                        <i class="bi bi-clock me-1"></i>Requested ${requestDate}
+                    </div>
+                </div>
+                
+                <!-- Profile Details -->
+                <div class="col-md-8">
+                    <!-- Stats -->
+                    <div class="profile-stats">
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-number">${likedCount}</div>
+                            <div class="profile-stat-label">Liked Posts</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-number">${savedCount}</div>
+                            <div class="profile-stat-label">Saved Posts</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-number">${interestsArray.length}</div>
+                            <div class="profile-stat-label">Interests</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Interests -->
+                    <div class="mb-4">
+                        <h6 class="text-light mb-2">
+                            <i class="bi bi-tags me-2" style="color: #b73613;"></i>
+                            Interests
+                        </h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            ${interestsArray.length > 0 ? 
+                                interestsArray.map(interest => 
+                                    `<span class="interest-tag">${interest}</span>`
+                                ).join('') : 
+                                '<p class="text-muted mb-0">No interests specified</p>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="mb-3">
+                        <h6 class="text-light mb-2">
+                            <i class="bi bi-activity me-2" style="color: #b73613;"></i>
+                            Recent Activity
+                        </h6>
+                        <div class="recent-activity-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-heart-fill me-2 text-danger"></i>
+                                    <span class="text-light">Liked ${likedCount} of your posts</span>
+                                </div>
+                                <small class="text-muted">Active user</small>
+                            </div>
+                        </div>
+                        <div class="recent-activity-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-bookmark-fill me-2 text-warning"></i>
+                                    <span class="text-light">Saved ${savedCount} posts</span>
+                                </div>
+                                <small class="text-muted">Engaged reader</small>
+                            </div>
+                        </div>
+                        <div class="recent-activity-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-person-plus me-2 text-info"></i>
+                                    <span class="text-light">Sent follow request</span>
+                                </div>
+                                <small class="text-muted">${requestDate}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Compatibility -->
+                    <div class="mt-4">
+                        <h6 class="text-light mb-2">
+                            <i class="bi bi-graph-up me-2" style="color: #b73613;"></i>
+                            Engagement Level
+                        </h6>
+                        <div class="progress mb-3">
+                            <div class="progress-bar" style="width: ${Math.min(likedCount * 20, 100)}%;"></div>
+                        </div>
+                        <small class="text-muted">
+                            ${likedCount > 5 ? 'Highly engaged' : likedCount > 2 ? 'Moderately engaged' : 'New follower'}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('seekerProfileContent').innerHTML = modalContent;
+        
+        const acceptBtn = document.getElementById('modalAcceptBtn');
+        acceptBtn.onclick = function() {
+
+            const acceptUrl = document.querySelector('.btn-accept').href;
+            if (acceptUrl) {
+                window.location.href = acceptUrl;
+            }
+        };
+        
+        const modal = new bootstrap.Modal(document.getElementById('seekerProfileModal'));
+        modal.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const requestCards = document.querySelectorAll('.request-card');
+        const statCards = document.querySelectorAll('.stat-card');
+        
+        requestCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        statCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        updateTotalLikes();
+    });
+
+    function updateTotalLikes() {
+        let totalLikes = 0;
+        document.querySelectorAll('.likes-count').forEach(count => {
+            const likeText = count.textContent;
+            const likeMatch = likeText.match(/(\d+)\s+posts/);
+            if (likeMatch) {
+                totalLikes += parseInt(likeMatch[1]);
+            }
+        });
+        
+        console.log(`Total likes across all requests: ${totalLikes}`);
+    }
+</script>
+{% endblock %}

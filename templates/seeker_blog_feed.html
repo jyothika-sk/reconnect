@@ -1,0 +1,716 @@
+{% extends "Sbase.html" %}
+{% load static %}
+
+{% block title %}{% if page_obj %}Blogs | Retiree Connect{% else %}Blog Not Found | Retiree Connect{% endif %}{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+ 
+  .blog-container {
+    background: linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 50%, #111 100%) !important;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .blog-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #b73613, transparent);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #bbb;
+  }
+
+  .empty-state i {
+    font-size: 4rem;
+    color: #444;
+    margin-bottom: 20px;
+  }
+
+  .empty-state h3 {
+    color: #fff;
+    margin-bottom: 15px;
+  }
+
+  .empty-state p {
+    color: #888;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+  }
+
+  /* Pagination Styles */
+  .pagination-container {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .pagination-dark .page-link {
+    background: #1c1c1c !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+    border-radius: 10px;
+    margin: 0 4px;
+    padding: 10px 18px;
+    transition: all 0.3s ease;
+  }
+
+  .pagination-dark .page-item.active .page-link {
+    background: linear-gradient(135deg, #b73613 0%, #d44d29 100%) !important;
+    border-color: #b73613 !important;
+    color: #fff !important;
+    transform: scale(1.05);
+  }
+
+  .pagination-dark .page-link:hover {
+    background: #2a2a2a !important;
+    border-color: #b73613 !important;
+    transform: translateY(-2px);
+  }
+
+  .pagination-dark .page-item.disabled .page-link {
+    background: #333 !important;
+    color: #666 !important;
+    border-color: #555 !important;
+  }
+
+  /* Rest of your existing CSS remains the same */
+  .author-card {
+    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #333 !important;
+    box-shadow: 0 8px 32px rgba(183, 54, 19, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .author-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(183, 54, 19, 0.15);
+    border-color: #444 !important;
+  }
+
+  .author-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #b73613, transparent);
+    transition: left 0.6s ease;
+  }
+
+  .author-card:hover::before {
+    left: 100%;
+  }
+
+  .author-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #333 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .author-card:hover .author-avatar {
+    border-color: #b73613 !important;
+    transform: scale(1.05);
+  }
+
+  .blog-card {
+    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid #333 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .blog-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #b73613, #ff6b6b, #ffa500, #b73613);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite linear;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .blog-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 50px rgba(183, 54, 19, 0.2);
+  }
+
+  .blog-title {
+    color: #fff !important;
+    font-weight: 800;
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(183, 54, 19, 0.3);
+  }
+
+  .blog-image {
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 1px solid #444 !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .blog-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 35px rgba(183, 54, 19, 0.25);
+  }
+
+  .blog-content {
+    color: #ccc !important;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    text-align: justify;
+  }
+
+  .blog-content p {
+    margin-bottom: 1.5rem;
+  }
+
+  .tag-badge {
+    background: linear-gradient(135deg, #b73613 0%, #ff6b6b 50%, #ffa500 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(183, 54, 19, 0.3);
+  }
+
+  .tag-badge:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(183, 54, 19, 0.4);
+  }
+
+  .interaction-btn {
+    border: none !important;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .like-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #b73613 100%) !important;
+    color: #fff !important;
+  }
+
+  .like-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(183, 54, 19, 0.4);
+    background: linear-gradient(135deg, #e55c5c 0%, #92270e 100%) !important;
+  }
+
+  .comment-btn {
+    background: linear-gradient(135deg, #1e90ff 0%, #0066cc 100%) !important;
+    color: #fff !important;
+  }
+
+  .comment-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(30, 144, 255, 0.4);
+    background: linear-gradient(135deg, #1c86ee 0%, #0055aa 100%) !important;
+  }
+
+  .save-btn {
+    background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%) !important;
+    color: #111 !important;
+  }
+
+  .save-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 165, 0, 0.4);
+    background: linear-gradient(135deg, #e69500 0%, #e67c00 100%) !important;
+  }
+
+  .save-btn.saved {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: #fff !important;
+  }
+
+  .disabled-btn {
+    background: #555 !important;
+    color: #ccc !important;
+    border: none !important;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-weight: 600;
+    cursor: not-allowed;
+  }
+
+  .comment-section {
+    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%) !important;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #333 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .comment-form textarea {
+    background: #1c1c1c !important;
+    border: 1px solid #444 !important;
+    color: #fff !important;
+    border-radius: 15px;
+    padding: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .comment-form textarea:focus {
+    border-color: #b73613 !important;
+    box-shadow: 0 0 0 3px rgba(183, 54, 19, 0.2) !important;
+    outline: none !important;
+    transform: translateY(-2px);
+    background: #2a2a2a !important;
+  }
+
+  .comment-item {
+    background: #1a1a1a !important;
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #333 !important;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+  }
+
+  .comment-item:hover {
+    transform: translateX(5px);
+    border-color: #444 !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .comment-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #333 !important;
+    transition: all 0.3s ease;
+  }
+
+  .comment-item:hover .comment-avatar {
+    border-color: #b73613 !important;
+    transform: scale(1.1);
+  }
+
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #333, transparent);
+    margin: 40px 0;
+    border: none;
+  }
+
+  .stats-bar {
+    display: flex;
+    gap: 25px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #bbb !important;
+    font-size: 0.9rem;
+  }
+
+  .stat-item i {
+    color: #b73613 !important;
+    font-size: 1.1rem;
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.8s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .pulse {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.05);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .floating-action {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+  }
+
+  .scroll-to-top {
+    background: linear-gradient(135deg, #b73613 0%, #d44d29 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(183, 54, 19, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .scroll-to-top:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 12px 35px rgba(183, 54, 19, 0.6);
+    background: linear-gradient(135deg, #92270e 0%, #b73613 100%) !important;
+  }
+
+  @media (max-width: 768px) {
+    .blog-title {
+      font-size: 2rem;
+    }
+
+    .blog-card {
+      padding: 20px;
+    }
+
+    .interaction-buttons {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .interaction-btn {
+      justify-content: center;
+    }
+
+    .pagination-dark .page-link {
+      padding: 8px 14px;
+      margin: 0 2px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="blog-container py-5">
+  <div class="container" style="max-width: 900px;">
+    {% if page_obj %} 
+    {% for blog in page_obj %} 
+    <div class="author-card fade-in mb-5">
+      <div class="d-flex align-items-center">
+        {% if blog.author.photo %}
+        <img src="{{ blog.author.photo.url }}" alt="{{ blog.author.fname }}" class="author-avatar me-4">
+        {% else %}
+        <div class="author-avatar me-4 d-flex align-items-center justify-content-center">
+          <i class="bi bi-person-fill" style="font-size: 2rem; color: #666;"></i>
+        </div>
+        {% endif %}
+        <div class="flex-grow-1">
+          <h4 class="text-light mb-2">{{ blog.author.fname }}</h4>
+          <div class="stats-bar">
+            <div class="stat-item">
+              <i class="bi bi-briefcase-fill"></i>
+              <span>{% if blog.author.field %}{{ blog.author.field }}{% else %}Mentor{% endif %}</span>
+            </div>
+            {% if blog.author.experience %}
+            <div class="stat-item">
+              <i class="bi bi-clock-fill"></i>
+              <span>{{ blog.author.experience }} Experience</span>
+            </div>
+            {% endif %}
+            <div class="stat-item">
+              <i class="bi bi-calendar-fill"></i>
+              <span>{{ blog.created_at|date:"F j, Y" }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="blog-card fade-in mb-5" style="animation-delay: 0.2s;">
+      <h1 class="blog-title">{{ blog.title }}</h1>
+
+      {% if blog.image %}
+      <div class="mb-4 text-center">
+        <img src="{{ blog.image.url }}" class="blog-image img-fluid w-100">
+      </div>
+      {% endif %}
+
+      <div class="blog-content">
+        {{ blog.content|linebreaks }}
+      </div>
+
+      {% if blog.tags.all %}
+      <div class="mt-4">
+        {% for tag in blog.tags.all %}
+        <span class="tag-badge d-inline-block">
+          <i class="bi bi-tag-fill me-1"></i>{{ tag.name }}
+        </span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-5 fade-in" style="animation-delay: 0.4s;">
+      <form action="{% url 'like_blog' blog.id %}" method="post" class="interaction-form">
+        {% csrf_token %}
+        <button type="submit" class="interaction-btn like-btn pulse">
+          <i class="bi bi-hand-thumbs-up-fill"></i>
+          <span>Like {{ blog.likes.count }}</span> 
+        </button>
+      </form>
+
+      <button class="interaction-btn comment-btn" onclick="toggleComments({{ blog.id }})">
+        <i class="bi bi-chat-dots-fill"></i>
+        <span>{{ blog.comments.count }} Comments</span>
+      </button>
+
+      <form action="{% url 'save_blog' blog.id %}" method="post" class="interaction-form">
+        {% csrf_token %}
+        <button type="submit" class="interaction-btn save-btn {% if blog.id in savedblog %}saved{% endif %}">
+          <i class="bi {% if blog.id in savedblog %}bi-bookmark-check-fill{% else %}bi-bookmark-plus{% endif %}"></i>
+          <span>{% if blog.id in savedblog %}Saved{% else %}Save{% endif %}</span>
+        </button>
+      </form>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Comments Section -->
+    <div id="comments-section-{{ blog.id }}" class="comment-section" style="display: none;">
+      <h4 class="text-light mb-4">
+        <i class="bi bi-chat-text-fill me-2" style="color: #b73613;"></i>
+        Discussion ({{ blog.comments.count }})
+      </h4>
+
+      {% if request.session.seekerid %}
+      <form action="{% url 'add_comment' blog.id %}" method="post" class="comment-form mb-4">
+        {% csrf_token %}
+        <div class="mb-3">
+          <textarea name="comment" class="form-control w-100 text-white" rows="4"
+            placeholder="Share your thoughts, ask questions, or provide feedback..." required></textarea>
+        </div>
+        <button type="submit" class="btn interaction-btn comment-btn">
+          <i class="bi bi-send-fill"></i>
+          Post Comment
+        </button>
+      </form>
+      {% else %}
+      <div class="alert alert-dark border-secondary text-center mb-4">
+        <i class="bi bi-info-circle me-2"></i>
+        Please log in as a seeker to join the discussion
+      </div>
+      {% endif %}
+
+      <div class="comments-list">
+        {% for comment in blog.comments.all %}
+        <div class="comment-item fade-in" style="animation-delay: {{ forloop.counter0|add:0.1 }}s;">
+          <div class="d-flex">
+            {% if comment.user.photo %}
+            <img src="{{ comment.user.photo.url }}" alt="{{ comment.user.name }}" class="comment-avatar me-3">
+            {% else %}
+            <div class="comment-avatar me-3 d-flex align-items-center justify-content-center">
+              <i class="bi bi-person-circle" style="font-size: 1.5rem; color: #666;"></i>
+            </div>
+            {% endif %}
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <strong class="text-light">{{ comment.user.name }}</strong>
+                <small class="text-muted">{{ comment.created_at|date:"M d, Y · H:i" }}</small>
+              </div>
+              <p class="text-light mb-0">{{ comment.comment }}</p>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-4">
+          <i class="bi bi-chat-square-text" style="font-size: 3rem; color: #f4efef; margin-bottom: 15px;"></i>
+          <p class="text-white">No comments yet. Be the first to start the discussion!</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Pagination Section  -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination-container">
+      <nav aria-label="Blog pagination">
+        <ul class="pagination pagination-dark justify-content-center">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+          </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+          {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state fade-in">
+      <i class="bi bi-file-earmark-text"></i>
+      <h3>Blog Not Found</h3>
+      <p>Oops! Looks like our mentors are taking a coffee break ☕ — new blogs coming soon!</p>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if page_obj %} 
+  <div class="floating-action">
+    <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top">
+      <i class="bi bi-arrow-up"></i>
+    </button>
+  </div>
+  {% endif %}
+</section>
+
+<script>
+  function toggleComments(blogId) {
+    const section = document.getElementById('comments-section-' + blogId);
+    const isVisible = section.style.display === 'block';
+
+    if (!isVisible) {
+      section.style.display = 'block';
+      setTimeout(() => {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    } else {
+      section.style.display = 'none';
+    }
+
+    section.classList.add('fade-in');
+  }
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', function () {
+    const scrollBtn = document.querySelector('.scroll-to-top');
+    if (scrollBtn && window.scrollY > 300) {
+      scrollBtn.style.opacity = '1';
+      scrollBtn.style.visibility = 'visible';
+    } else if (scrollBtn) {
+      scrollBtn.style.opacity = '0';
+      scrollBtn.style.visibility = 'hidden';
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const scrollBtn = document.querySelector('.scroll-to-top');
+    if (scrollBtn) {
+      scrollBtn.style.opacity = '0';
+      scrollBtn.style.visibility = 'hidden';
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const interactiveElements = document.querySelectorAll('.author-card, .blog-card, .comment-item');
+
+    interactiveElements.forEach(element => {
+      element.addEventListener('mouseenter', function () {
+        this.style.transform = this.style.transform || '';
+      });
+
+      element.addEventListener('mouseleave', function () {
+        this.style.transform = '';
+      });
+    });
+  });
+</script>
+{% endblock %}
