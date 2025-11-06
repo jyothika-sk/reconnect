@@ -79,9 +79,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'reconnectdb',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
+        'USER': 'reconnectdb_user',
+        'PASSWORD': 'k8brBXP0Er1bs1klgL73oQuYjneOwxML',
+        'HOST': 'dpg-d465clvdiees738lcsk0-a',
         'PORT': '5432',
     }
 }
